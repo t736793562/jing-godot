@@ -1,0 +1,17 @@
+[
+  {
+    "path": "expedition-native-disk-20261027-v01/decline-mother.json",
+    "bytes": 646134,
+    "sha256": "4398041be72f7eece566a10be1eb8618f761232ad322b94bba69bec5aea15eeb"
+  },
+  {
+    "path": "expedition-native-disk-20261027-v01/lend-mother.json",
+    "bytes": 730713,
+    "sha256": "64b1299472923e66fa685746b456aea6fa937e6f579fce76472b68a79850c85a"
+  },
+  {
+    "path": "chapter-eight-promoted-disk-20261026/controlled-rope-decline.json",
+    "bytes": 721494,
+    "sha256": "2756c39288193d0aa46335421eaf14c3a3644f2f75a87e372ee19288e0e1bd45"
+  }
+]

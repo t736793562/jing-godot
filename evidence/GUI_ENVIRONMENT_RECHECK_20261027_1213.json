@@ -1,0 +1,12 @@
+{
+  "checked_utc": "2026-10-27T12:13:09.012241+00:00",
+  "environments": [],
+  "codingEnvironments": [],
+  "cua_getState": {
+    "isError": true,
+    "error": "native pipe path unavailable: No such file or directory (os error 2); kernel reset"
+  },
+  "created_tasks": false,
+  "system_changes": false,
+  "gui_test": "NOT_RUN"
+}

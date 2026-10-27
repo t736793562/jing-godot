@@ -1,0 +1,13 @@
+# Original bytes restored from tracked payload parts.
+/project/assets/
+/project/fonts/
+/project/data/
+/art_reference/
+/project/.godot/
+**/*.import
+**/__pycache__/
+**/*.pyc
+/.runtime/
+/.git/
+/acceptance-local/
+*.tmp

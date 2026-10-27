@@ -1,0 +1,41 @@
+{
+  "promoted": true,
+  "candidate_runs": 22,
+  "candidate_cold_processes": 28,
+  "production_verification": "PASS: AGGREGATE_SAVE_UX_PIGEON_245.json",
+  "changed": [
+    "project/scripts/game_model.gd",
+    "project/scripts/game_controller.gd",
+    "project/scripts/native_save.gd",
+    "project/scripts/native_continuation.gd",
+    "project/scripts/native_continuation_store.gd",
+    "project/data/pigeon_pickup_prose.json",
+    "tests/pigeon_focus.gd",
+    "tests/pigeon_early_save.gd",
+    "tests/pigeon_natural.gd",
+    "tests/controller_pigeon_night.gd",
+    "tests/controller_pigeon_flow.gd",
+    "tools/run_checks.py",
+    "tools/staged_pigeon_pickup.gd"
+  ],
+  "sha256": {
+    "project/scripts/game_model.gd": "1d687e10cd706d179dd1c17b49a02c785df73367819ebcae5735e31898e0aa5e",
+    "project/scripts/game_controller.gd": "4d920660ea3f7b08944d614a87990a4db434b57a3728b468c5e9a45863faa746",
+    "project/scripts/native_save.gd": "d148730712c8010c1ea4afa6f09199784a11d0efdc28c2368d89195c53422276",
+    "project/scripts/native_continuation.gd": "df8e6419de0d93ecb3670c43d77bf95de5148f1d4f435a144e995fd7d362cd68",
+    "project/scripts/native_continuation_store.gd": "b8091b7636eb7541e6d148c7b4fd65b73636739736ffc3a411db92221d07043e",
+    "project/data/pigeon_pickup_prose.json": "03f944c96ea32c3a8f89cc5701f62d82e6fa14cbb0afd9717f38069cc382fa20",
+    "tests/pigeon_focus.gd": "0a60e104af0b9c8ef296ccb74afdbae3f4ed77bab905ceb45a5d32643ef3bf1e",
+    "tests/pigeon_early_save.gd": "e3da3ada9a35c75b0c0153d6f8f84925cbc0b51d3701175ea829cf7b04b5f8b9",
+    "tests/pigeon_natural.gd": "9e16d8994677e6604120aeb8902b407c614add76b25dd78a7ae081289e396374",
+    "tests/controller_pigeon_night.gd": "f480bdd439440641bf933e33fb5104b6f0738d76f687cf20ed48e080c605e16a",
+    "tests/controller_pigeon_flow.gd": "a92c1e73e0469242952367a2f93cdd8e98a3da1f4640287040dd64cc0108aa11",
+    "tools/run_checks.py": "5fdea18c98aa18be6f83d1e5641630ed99b97cd2eee9cb479df63360617cc46c",
+    "tools/staged_pigeon_pickup.gd": "842e5203913c07e39fec6e1cd03dec2e6c502ffe7ee5a5af87415acba6229080"
+  },
+  "visual_test": false,
+  "windows_test": false,
+  "registered_suites": 245,
+  "production_cold_verification": "PIGEON_PROMOTED_COLD_ACCEPTANCE.json",
+  "production_cold_passed": true
+}

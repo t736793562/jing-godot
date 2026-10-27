@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "registered_suites": 245,
+  "aggregate": "AGGREGATE_SAVE_UX_PIGEON_245.json",
+  "autosave_production": "SAVE_UX_PROMOTED_ACCEPTANCE.json",
+  "pigeon_production_cold": "PIGEON_PROMOTED_COLD_ACCEPTANCE.json",
+  "visual_acceptance": "NOT_RUN",
+  "windows_acceptance": "NOT_RUN",
+  "full_natural_49_day_gui": "NOT_RUN",
+  "gui_blocker": "GUI_ENVIRONMENT_RECHECK_20261027_1213.json",
+  "project_complete": false,
+  "accepted_utc": "2026-10-27T13:28:53.640181+00:00"
+}

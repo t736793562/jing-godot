@@ -1,0 +1,479 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "tag": "stash-small-0-34",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 0,
+        "checks": 70,
+        "end": 34,
+        "failed": [],
+        "id": "stash-small",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-small-34-50",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 34,
+        "checks": 35,
+        "end": 50,
+        "failed": [],
+        "id": "stash-small",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-small-50-56",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 50,
+        "checks": 15,
+        "end": 56,
+        "failed": [],
+        "id": "stash-small",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-small-56-57",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 56,
+        "checks": 5,
+        "end": 57,
+        "failed": [],
+        "id": "stash-small",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-small-57-76",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 57,
+        "checks": 41,
+        "end": 76,
+        "failed": [],
+        "id": "stash-small",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-small-76-76",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 76,
+        "checks": 3,
+        "end": 76,
+        "failed": [],
+        "id": "stash-small",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-full-0-31",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 0,
+        "checks": 64,
+        "end": 31,
+        "failed": [],
+        "id": "stash-full",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-full-31-46",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 31,
+        "checks": 33,
+        "end": 46,
+        "failed": [],
+        "id": "stash-full",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-full-46-51",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 46,
+        "checks": 13,
+        "end": 51,
+        "failed": [],
+        "id": "stash-full",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-full-51-52",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 51,
+        "checks": 5,
+        "end": 52,
+        "failed": [],
+        "id": "stash-full",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-full-52-71",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 52,
+        "checks": 41,
+        "end": 71,
+        "failed": [],
+        "id": "stash-full",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-full-71-71",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 71,
+        "checks": 3,
+        "end": 71,
+        "failed": [],
+        "id": "stash-full",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "delivery-0-33",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 0,
+        "checks": 68,
+        "end": 33,
+        "failed": [],
+        "id": "delivery",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "delivery-33-72",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 33,
+        "checks": 81,
+        "end": 72,
+        "failed": [],
+        "id": "delivery",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "delivery-72-72",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 72,
+        "checks": 3,
+        "end": 72,
+        "failed": [],
+        "id": "delivery",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "no_reply-0-31",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 0,
+        "checks": 64,
+        "end": 31,
+        "failed": [],
+        "id": "no_reply",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "no_reply-31-73",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 31,
+        "checks": 87,
+        "end": 73,
+        "failed": [],
+        "id": "no_reply",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "no_reply-73-73",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 73,
+        "checks": 3,
+        "end": 73,
+        "failed": [],
+        "id": "no_reply",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-leave-0-33",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 0,
+        "checks": 68,
+        "end": 33,
+        "failed": [],
+        "id": "stash-leave",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-leave-33-48",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 33,
+        "checks": 33,
+        "end": 48,
+        "failed": [],
+        "id": "stash-leave",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-leave-48-53",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 48,
+        "checks": 13,
+        "end": 53,
+        "failed": [],
+        "id": "stash-leave",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-leave-53-54",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 53,
+        "checks": 5,
+        "end": 54,
+        "failed": [],
+        "id": "stash-leave",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-leave-54-73",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 54,
+        "checks": 41,
+        "end": 73,
+        "failed": [],
+        "id": "stash-leave",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-leave-73-73",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 73,
+        "checks": 3,
+        "end": 73,
+        "failed": [],
+        "id": "stash-leave",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-expired-0-33",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 0,
+        "checks": 68,
+        "end": 33,
+        "failed": [],
+        "id": "stash-expired",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-expired-33-48",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 33,
+        "checks": 33,
+        "end": 48,
+        "failed": [],
+        "id": "stash-expired",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-expired-48-71",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 48,
+        "checks": 49,
+        "end": 71,
+        "failed": [],
+        "id": "stash-expired",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    },
+    {
+      "tag": "stash-expired-71-71",
+      "exit_code": 0,
+      "passed": true,
+      "result": {
+        "begin": 71,
+        "checks": 3,
+        "end": 71,
+        "failed": [],
+        "id": "stash-expired",
+        "main_integrated": false,
+        "passed": true,
+        "real_disk": true,
+        "visual_test": false
+      }
+    }
+  ],
+  "source_unchanged": true,
+  "source_sha256": {
+    "project/scripts/chapter_eight_care_prose.gd": "514e8743f81e9f74d593b33c923ad2ac2b4c2b6bd8eb5c2dfd2a32444064653d",
+    "project/scripts/native_continuation.gd": "df8e6419de0d93ecb3670c43d77bf95de5148f1d4f435a144e995fd7d362cd68",
+    "project/scripts/chapter_nine_care_prose.gd": "c3c52b923eb3416d8f752fb0f75ac82094dbcc97be478e16664ef14fc844380a",
+    "project/scripts/native_continuation_store.gd": "b8091b7636eb7541e6d148c7b4fd65b73636739736ffc3a411db92221d07043e",
+    "project/scripts/chapter_five_care_prose.gd": "16541ad6c416c58ac4edd827f4e386cb9e12945b6d7b2be5fa3785df5f42c7f3",
+    "project/scripts/home_care_prose.gd": "8740874a9f06d10fa2b44067e783f564060e2f6cc54203e485af50096d300775",
+    "project/scripts/layout_layer.gd": "8de16f9fcb6ca23653936f5893b1f7de2bc01609a5ed7a573c95d231b50d1a88",
+    "project/scripts/game_controller.gd": "4d920660ea3f7b08944d614a87990a4db434b57a3728b468c5e9a45863faa746",
+    "project/scripts/chapter_seven_care_prose.gd": "1417c69763bbd7a69e71618ec2f1886db44af17f7b4e8e2b4ab36b5548ae4976",
+    "project/scripts/layout_view.gd": "a2507e8ec0367eb22bfbd76cb292074d913829117c90a384c2eae566aad3f8fd",
+    "project/scripts/chapter_six_care_prose.gd": "ee845ccde102391f1194233d5e9398a219ac26c8958b2d75485cfc2be229c68b",
+    "project/scripts/js_json.gd": "9804bc3567d257b4152a8bb54cb6b18ffacba7f9693c353d34f8d080ce99e548",
+    "project/scripts/game_model.gd": "1d687e10cd706d179dd1c17b49a02c785df73367819ebcae5735e31898e0aa5e",
+    "project/scripts/native_rng.gd": "5601499f011fb65a2462f37ce4bf0f4918df8d9bb8f85ae06acfe20218287629",
+    "project/scripts/family_prose.gd": "eb0bf642bc9bbbbd67ec142bce14664b73f0d5bb8ffeb605e05a6f9c47f37819",
+    "project/scripts/native_save.gd": "d148730712c8010c1ea4afa6f09199784a11d0efdc28c2368d89195c53422276",
+    "tools/bird_promoted_cold.gd": "8d150d8556f5d19507a1442a79eae1a457c75b0328d7d76cae0365234eb618c6",
+    "evidence/staged_pigeon_natural_reference.jsonl": "bd9c45f34c914e2ca924e6a5e1e8edfaa3e931e62b1b4dae4b5d2dc51a469e9a"
+  },
+  "seconds": 328.0879955291748,
+  "run_id": "ae471691ea",
+  "visual_test": false,
+  "main_integrated": true,
+  "scope": "Six normal-start source-matched paths to D11. Fresh processes at pigeon plan, pickup choice/return where available, final D11 and final readback. Real native disk, not GUI."
+}

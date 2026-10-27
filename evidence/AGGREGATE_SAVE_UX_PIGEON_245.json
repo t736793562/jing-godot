@@ -1,0 +1,3364 @@
+{
+  "tests": [
+    {
+      "name": "layout_structure",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "gameplay_connected": false,
+        "resource_errors": [],
+        "structured_layouts": 216,
+        "unsupported_layouts": 0,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "rng_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "assertions": 1980,
+        "failures": [],
+        "full_game_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "loadout_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 355,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "opening_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 8800,
+        "coverage": {
+          "birds": 200.0,
+          "gain": 56.0,
+          "injury": 72.0,
+          "loss": 48.0
+        },
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_flow",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 95,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "health_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1728,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "survival_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2400,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "night_preview_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2560,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "survival_settlement_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 480,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "animal_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3520,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "night_event_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 6400,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "night_effect_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 6144,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "night_reading_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1872,
+        "failed": [],
+        "full_game": false,
+        "variants": 624
+      },
+      "passed": true
+    },
+    {
+      "name": "night_closure_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 106,
+        "failed": [],
+        "full_game": false,
+        "variants": 53
+      },
+      "passed": true
+    },
+    {
+      "name": "night_dawn_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 48,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "night_delivery_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 288,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "js_json_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2065,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "active_new_game_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 5,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "current_diet_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 384,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "first_night_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 800,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "native_save_regression",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 680,
+        "failed": [],
+        "scope": "native opening/first-night save candidate",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "native_save_io_faults",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 23,
+        "failed": [],
+        "faults": 5,
+        "real_disk": true
+      },
+      "passed": true
+    },
+    {
+      "name": "day_plan_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 720,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "focus_effect_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1440,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "first_focus_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3960,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "family_prose_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 20480,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "current_reading_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1600,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "second_night_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2340,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "early_focus_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 4320,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "early_care_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 6480,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "early_lifecycle_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 6160,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_early_days",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 113,
+        "failed": [],
+        "full_game": false,
+        "scope": "one actual UI-controller run through four nights",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "critical_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 720,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "native_save_repro_care",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "case": "fourth-day care save, integer priorCount versus JSON float",
+        "passed": true,
+        "reason": "",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "primary_button_states",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 19,
+        "failed": [],
+        "scope": "signal-to-approved-asset bindings and caption color",
+        "visual_acceptance": "NOT_RUN"
+      },
+      "passed": true
+    },
+    {
+      "name": "night_guard_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2688,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "first_week_plan_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 720,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "first_week_focus_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 4186,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "first_week_mixed_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 4797,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "first_week_home_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 6240,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "focus_reselect_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2040,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "animal_morning_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 768,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "first_week_lifecycle_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2032,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "native_week_save",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 496,
+        "disk_test": false,
+        "failed": [],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_first_week",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 233,
+        "failed": [],
+        "full_game": false,
+        "scope": "one actual UI-controller run through nine nights",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "native_week_save_rejections",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 28,
+        "failed": [],
+        "kinds": [
+          "primary",
+          "care",
+          "wood",
+          "weather",
+          "home",
+          "neighbourhood",
+          "water"
+        ],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "missing_family_focus_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 9360,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "missing_family_lifecycle_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 302,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "missing_family_save",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 352,
+        "disk_test": false,
+        "failed": [],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_missing_family",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 158,
+        "failed": [],
+        "full_game": false,
+        "households": 6,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "day_ten_boundary_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 348,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "day_ten_save",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 384,
+        "disk_test": false,
+        "failed": [],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_day_ten",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 257,
+        "failed": [],
+        "full_game": false,
+        "scope": "one actual UI-controller run through ten nights",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "solitary_packet_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2448,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "solitary_lifecycle_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 210,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "solitary_save",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 256,
+        "disk_test": false,
+        "failed": [],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "solitary_save_rejections",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 8,
+        "failed": [],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_solitary",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 65,
+        "failed": [],
+        "full_game": false,
+        "outcomes": 2,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_plan_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1280,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "reading_settings",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 54,
+        "failed": [],
+        "gameplay_mutated": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "home_admission_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2880,
+        "failed": [],
+        "full_game": false,
+        "read_only_projection": true
+      },
+      "passed": true
+    },
+    {
+      "name": "custody_record_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 6861,
+        "failed": [],
+        "full_game": false,
+        "read_only_projection": true
+      },
+      "passed": true
+    },
+    {
+      "name": "neighbour_policy_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 5760,
+        "failed": [],
+        "full_game": false,
+        "read_only_projection": true
+      },
+      "passed": true
+    },
+    {
+      "name": "custody_constructor_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1250,
+        "failed": [],
+        "full_game": false,
+        "read_only_projection": true
+      },
+      "passed": true
+    },
+    {
+      "name": "custody_choice_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 456,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "custody_diary_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 528,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "custody_return_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 704,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "custody_chain_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2256,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "custody_owner_return_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 672,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_choice_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1960,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_return_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1356,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_outdoor_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1062,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "home_care_components_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 560,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_care_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 560,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_care_flow_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1572,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_home_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 80,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_condition_home_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 840,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pre_photo_home_base_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 810,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "day_eleven_twelve_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 960,
+        "disk_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "day_eleven_lifecycle_parity",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 344,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "native_later_save",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 24,
+        "checks": 720,
+        "disk_test": false,
+        "failed": [],
+        "scope": "Staged v2 deterministic replay proof, exact typed round-trip per D11 action; native v1 unchanged.",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "native_later_save_rejections",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 33,
+        "disk_test": false,
+        "failed": [],
+        "recomputed_checksums": true,
+        "tamper_cases": 10,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_day_eleven",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 6,
+        "checks": 493,
+        "failed": [],
+        "real_mouse_test": false,
+        "scope": "Headless controller signal calls, option pagination and distinct target hit rectangles, v2 save preview/restore and new-controller loading.",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_four_continuous",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2289,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_four_animals",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 382,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_four",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 28,
+        "checks": 743,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_four_edges",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 12,
+        "checks": 53,
+        "constructed_rendering_cases": true,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_failed_action_compat",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "passed": true,
+        "rows": [
+          {
+            "attempted_result": false,
+            "error": "",
+            "exact": true,
+            "new_valid": true,
+            "old_valid": true,
+            "op": "confirm_night"
+          },
+          {
+            "attempted_result": false,
+            "error": "",
+            "exact": true,
+            "new_valid": true,
+            "old_valid": true,
+            "op": "finish_night"
+          }
+        ],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_five_continuous",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2176,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_five_choices",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1284,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_five_returns",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1926,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_five",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 35,
+        "checks": 921,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_six_continuous",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1742,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_six_mother_branches",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1092,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_six_steps",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1064,
+        "continuous": false,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_six",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 29,
+        "checks": 806,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_six_journal_bounds",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 19,
+        "encoded_bytes": 561646,
+        "failed": [],
+        "max_actions": 1024,
+        "scope": "Controlled menu-return journal capacity, not full 49-day play or autosave performance acceptance."
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_six_scarce_branches",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 744,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_photo_mid_contract",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 11072,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_photo_batch_numbers",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 9216,
+        "failed": [],
+        "full_game": false,
+        "prose_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_photo_operations",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3360,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_deadline_contract",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 5184,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_deadline_validation",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1120,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_photo_nodes",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 47,
+        "checks": 94,
+        "failed": [],
+        "scope": "Actual source-reached node factories only; no native whole-chapter claim.",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_photo_preparation",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2304,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_packets",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 7136,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_choice",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 4096,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_choice_rollback",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 19,
+        "failed": [],
+        "scope": "Injected candidate faults prove state/RNG/packet rollback and retry only; not observed source failures or GUI."
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_choice_window",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1024,
+        "failed": [],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_plan",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1680,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_reached_plans",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 266,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 266,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_controlled_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 560,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_diary",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 266,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_steps",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1064,
+        "continuous": false,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_continuous",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1650,
+        "failed": [],
+        "frames": 133,
+        "full_game": false,
+        "starts": 20,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_seven_part0",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 7,
+        "checks": 191,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_seven_part1",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 7,
+        "checks": 191,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_seven_part2",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 7,
+        "checks": 195,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_seven_part3",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 7,
+        "checks": 191,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_seven_part4",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 7,
+        "checks": 191,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_seven_safe_full",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 24,
+        "failed": [],
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_c8_public_uncle",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 512,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_c8_public_photo",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 688,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_c8_public_transfer",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 768,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_route_warning_contract",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3092,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_route_warning_packets",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3072,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_route_warning_type",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 485,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_route_warning_binding_marker",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 192,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_boundary_contract",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3024,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_boundary_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1728,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_boundary_selected",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 768,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_boundary_return_packets",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 640,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_support_logistics",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 4208,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_crisis_conditions",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1568,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_crisis_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 864,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_crisis_prepare",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 4520,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_crisis_packet",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2680,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_crisis_return",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3616,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_crisis_morning",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3456,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_crisis_diary",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1536,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_uncle_crisis_lifecycle",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 7680,
+        "disk_process_test": false,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_grandfather_home_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1536,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_grandfather_home_presentation",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 492,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_grandfather_home_morning",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 960,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_r18_family_return",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1536,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_r18_family_aftermath",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1920,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_plan",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1680,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_family_plan",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 864,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_controlled_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 336,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_binding_matrix",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1152,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_c8_early_transfer",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3072,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_c8_transfer_delta",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1280,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_photo_preparation",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2061,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_diary",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 168,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_p1_producer",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1152,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_p1_actions",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3960,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_p1_validation",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1920,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_p1_public_choice",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 384,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_p1_public_return",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 384,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_steps",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 672,
+        "continuous": false,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_eight_continuous",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1052,
+        "failed": [],
+        "frames": 84,
+        "full_game": false,
+        "starts": 20,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_eight_part0",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 6,
+        "checks": 167,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_eight_part1",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 6,
+        "checks": 165,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_eight_part2",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 6,
+        "checks": 169,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_eight_part3",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 6,
+        "checks": 167,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_eight_part4",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 3,
+        "checks": 89,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_disclosure_contract",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 6720,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_disclosure_projection",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2304,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_disclosure_default",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2880,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_ending_intention",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1440,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_choice",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 112,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_continuous",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 690,
+        "failed": [],
+        "frames": 56,
+        "full_game": false,
+        "native_terminal_persistence_tested": false,
+        "source_terminal_save_errors": [
+          "controlled-rope-decline-r4-r2-r0:48",
+          "home-controlled-rope-decline-r8-r5-r1:48",
+          "home-controlled-rope-lend-r14-r9-r3:48",
+          "home-controlled-rope-decline-r15-r10-r4:48",
+          "home-controlled-rope-decline-r4-r13-r5:48",
+          "home-controlled-rope-decline-r4-r2-r0:48",
+          "uncle-controlled-rope-decline-r4-r2-r0:48",
+          "grandfather-controlled-rope-decline-r4-r2-r0:48",
+          "home-home-controlled-rope-decline-r8-r5-r1:48",
+          "uncle-home-controlled-rope-decline-r8-r5-r1:48",
+          "grandfather-home-controlled-rope-decline-r8-r5-r1:48"
+        ],
+        "starts": 12,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_diary",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 112,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_diary_matrix",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1920,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_ending",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3840,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_entry",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 112,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_family_route",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 556,
+        "failed": [],
+        "frames": 46,
+        "full_game": false,
+        "native_terminal_persistence_tested": false,
+        "source_terminal_save_errors": [
+          "care-natural-controlled-rope-decline-r9:48",
+          "care-scarce-controlled-rope-decline-r10:48"
+        ],
+        "starts": 4,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_family_view",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1920,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_final_nodes",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 20,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_final_nodes_controlled",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 780,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_grandfather_recovery",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 540,
+        "controlled": true,
+        "failed": [],
+        "full_route": false,
+        "main_integrated": true
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_inquiry_choices",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 51,
+        "failed": [],
+        "full_route": false,
+        "main_integrated": true
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_late_care",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 372,
+        "failed": [],
+        "frames": 30,
+        "full_game": false,
+        "native_terminal_persistence_tested": false,
+        "source_terminal_save_errors": [
+          "controlled-late-covered-listen:48",
+          "controlled-late-covered-treat:48",
+          "controlled-late-beaten-listen:48",
+          "controlled-late-beaten-treat:48",
+          "controlled-late-assault-listen:48",
+          "controlled-late-assault-treat:48"
+        ],
+        "starts": 6,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_late_recovery",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 372,
+        "failed": [],
+        "frames": 30,
+        "full_game": false,
+        "native_terminal_persistence_tested": false,
+        "source_terminal_save_errors": [
+          "controlled-recovery-safe-false:48",
+          "controlled-recovery-safe-true:48",
+          "controlled-recovery-exhausted-false:48",
+          "controlled-recovery-exhausted-true:48",
+          "controlled-recovery-detour-false:48",
+          "controlled-recovery-detour-true:48"
+        ],
+        "starts": 6,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_late_uncle",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 372,
+        "failed": [],
+        "frames": 30,
+        "full_game": false,
+        "native_terminal_persistence_tested": false,
+        "source_terminal_save_errors": [
+          "controlled-uncle-escaped-remember:48",
+          "controlled-uncle-escaped-sit:48",
+          "controlled-uncle-released-remember:48",
+          "controlled-uncle-released-sit:48",
+          "controlled-uncle-dead-remember:48",
+          "controlled-uncle-dead-sit:48"
+        ],
+        "starts": 6,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_mother_tail",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 384,
+        "controlled": true,
+        "failed": [],
+        "full_route": false,
+        "main_integrated": true
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_ordinary_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 61,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "skipped_special_events": 33,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_ordinary_matrix",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1789,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "skipped_special_events": 1089,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_p1_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 576,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_p1_context",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1280,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_photo_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 8,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_photo_preparation",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 2757,
+        "failed": [],
+        "full_game": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_plan",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3200,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_return",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 112,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_steps",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 448,
+        "continuous": false,
+        "failed": [],
+        "full_game": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_terminal_view",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 60,
+        "failed": [],
+        "full_game": false,
+        "live_state_immutable": true,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_transfer",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3600,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "result_prose_tested": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_transfer_numbers",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 3600,
+        "failed": [],
+        "full_game": false,
+        "main_integrated": true,
+        "result_prose_tested": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "chapter_nine_uncle_tail",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 96,
+        "controlled": true,
+        "failed": [],
+        "full_route": false,
+        "main_integrated": true
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_part0",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 5,
+        "checks": 141,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_end_part0",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 86,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_part1",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 5,
+        "checks": 141,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_end_part1",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 86,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_part2",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 5,
+        "checks": 139,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_end_part2",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 86,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_part3",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 5,
+        "checks": 141,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_end_part3",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 86,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_part4",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 5,
+        "checks": 141,
+        "failed": [],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_end_part4",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 86,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_chapter_nine_terminal_variants",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 9,
+        "controlled_no_photo_fixture": true,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "auxiliary_system_menu",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 49,
+        "failed": [],
+        "main_integrated": true,
+        "pending_screens": [
+          "disk_UI24",
+          "help_UI21",
+          "feedback_UI26",
+          "records_UI27_UI28"
+        ],
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "auxiliary_help",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 106,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "auxiliary_disk",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 53,
+        "failed": [],
+        "isolated_directory": "user://ui-disk-tests-2908541",
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "auxiliary_feedback",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 85,
+        "failed": [],
+        "isolated_directory": "user://ui-feedback-tests-1765333",
+        "main_integrated": true,
+        "online_submission_implemented": false,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "auxiliary_family",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 115,
+        "controlled_projection": true,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "auxiliary_household",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 42,
+        "controlled_projection": true,
+        "expedition_gameplay_implemented": false,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "recall_action_implemented": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "auxiliary_resource_visibility",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 10,
+        "failed": [],
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "auxiliary_room",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 65,
+        "controlled_projection": true,
+        "failed": [],
+        "main_integrated": true,
+        "raw_assets_modified": false,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_plan",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 240,
+        "checks": 14160,
+        "departure_tested": false,
+        "failed": [],
+        "main_integrated": true,
+        "travel_return_tested": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_reward",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 2304,
+        "checks": 34560,
+        "failed": [],
+        "main_integrated": true,
+        "return_transition_tested": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_departure",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 600,
+        "checks": 4200,
+        "failed": [],
+        "main_integrated": true,
+        "night_transition_tested": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_special",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 960,
+        "checks": 4800,
+        "failed": [],
+        "main_integrated": true,
+        "return_transition_tested": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_return",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 720,
+        "checks": 3600,
+        "continuous_travel_tested": false,
+        "failed": [],
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_morning",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 120,
+        "checks": 3840,
+        "failed": [],
+        "main_integrated": true,
+        "natural_game_trajectory": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_search",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 600,
+        "checks": 3000,
+        "failed": [],
+        "main_integrated": true,
+        "search_scene_tested": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_search_scene",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 240,
+        "checks": 1680,
+        "failed": [],
+        "full_day_plan_tested": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_diary",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 384,
+        "checks": 768,
+        "failed": [],
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_night",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 38,
+        "checks": 208,
+        "failed": [],
+        "main_integrated": true,
+        "multiday_travel_tested": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_day_plan",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 455,
+        "checks": 910,
+        "failed": [],
+        "full_day_execution_tested": false,
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_binding",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 13,
+        "checks": 52,
+        "failed": [],
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_focus",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 26,
+        "checks": 156,
+        "failed": [],
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_continuous",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 1338,
+        "failed": [],
+        "frames": 96,
+        "main_integrated": true,
+        "new_game_to_end": false,
+        "starts": 12,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "expedition_recall",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 317,
+        "checks": 2853,
+        "failed": [],
+        "main_integrated": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_expedition_ui_search_recall",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 35,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "scope": "Control signals and real native-proof recall/search actions; UI14 render/scroll only, not mouse/visual acceptance.",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_expedition_ui_night",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 32,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "scope": "Approved UI17 native control signals with real D11-anchored proof; no screenshot or mouse acceptance.",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_expedition_ui_overview",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 41,
+        "controlled_absence_probe": true,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "save_ux_test",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 40,
+        "failed": [],
+        "main_integrated": false,
+        "real_disk": true,
+        "real_window_close": false,
+        "scope": "Real isolated writes/reads and control-signal confirmations; close callback tested with quit intercepted, not OS GUI.",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "save_ux_edges_test",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 22,
+        "failed": [],
+        "main_integrated": false,
+        "real_disk": true,
+        "real_window_close": false,
+        "simulated_cleanup_warning": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "save_ux_backup_notice",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "autosave_paused": true,
+        "main_integrated": false,
+        "passed": true,
+        "primary_preserved": true,
+        "real_disk": true,
+        "screen": "autoSaveFailure",
+        "visible_warning": true,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pigeon_focus",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 156,
+        "checks": 1368,
+        "failed": [],
+        "main_integrated": true,
+        "natural_acquisition_tested": false,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pigeon_early_save",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 36,
+        "checks": 996,
+        "failed": [],
+        "main_integrated": true,
+        "real_disk": false,
+        "scope": "Model source parity plus strict native typed encode/decode at early checkpoints, including D11 anchors.",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "pigeon_natural",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "cases": 6,
+        "checks": 1217,
+        "failed": [],
+        "main_integrated": true,
+        "normal_start_to_d11": true,
+        "real_disk": false,
+        "steps": 436,
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_pigeon_night",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 44,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "scope": "Approved supplementary art components and actual control signals; normal-start night snapshots plus labelled paper-only/stale/locked UI edge fixtures.",
+        "visual_test": false
+      },
+      "passed": true
+    },
+    {
+      "name": "controller_pigeon_flow",
+      "exit_code": 0,
+      "engine_errors": false,
+      "result": {
+        "checks": 15,
+        "failed": [],
+        "main_integrated": true,
+        "real_mouse_test": false,
+        "scope": "Actual pickup choice, return, diary and night control signals from a normal-start source snapshot; not mouse/visual acceptance.",
+        "visual_test": false
+      },
+      "passed": true
+    }
+  ],
+  "source_sha256": {
+    "project/LayoutInspector.tscn": "e7b68a4e84e545427f3a912eb8f1d9110d0044ebfe9d9e871c655ba84af1c317",
+    "project/Main.tscn": "7c8124a58b1add0a38d1cb5e64c38141aa3219f21a65df2bcf18564d7fef8c86",
+    "project/data/active_base_state_reference.json": "ac0633cf450f19b7f9b5d697fd4a656efb59e4a04aacedaea150e3f378080104",
+    "project/data/active_new_game_reference.json": "758d513ed6c8be8e095dd06c1c00ba07450a1766b1fcb5110d630ff0f63a19b8",
+    "project/data/all_layouts.json": "aa78de8667860189690cad8282b94725425ec01d74c254e0821983a858c0addf",
+    "project/data/animal_morning_reference.json": "092da7e2fca40a7b6e1d9e968b39421819dd956daa8c99e4e6635b5cd38007cb",
+    "project/data/animal_reference.json": "62d695433b6f1f2ed4ed3534bef3a877be7e16842fd04d92aef3c2dae741a61a",
+    "project/data/base_state_template.json": "d9b3b20dc29d87344db6a636a484c41b1af5a9c596ee72bd01fea43a81548839",
+    "project/data/c018_contract.json": "4ec2de354222f6e28b483ee532846dd537f4043d841df7cdba86c8211ffcc696",
+    "project/data/c8_early_transfer_prose.json": "53385422147715b4866e9f1b66c0ca156feb55ed95f12c9cdc0ed3316b27970e",
+    "project/data/care_reselect_text.json": "1bfaa1b71da780bb00bfc76d13429e442da2242d494d08b3864a9fa530a9ae47",
+    "project/data/chapter4_prose.json": "e7cad2eee331081a1a1d38dbef0e1444aeb31a0cdcaa592812000232e4e0579a",
+    "project/data/chapter_eight_bound_nodes.json": "3b35766de8ff189dd8562abe3e8aef1b294cc6b98905c262b330a9dfa43c1a75",
+    "project/data/chapter_eight_care_raw_prose.json": "8247257ce4d11f8610c6bb3b880e153e4cd865da53508736cc315eff1ff9d942",
+    "project/data/chapter_eight_condition_home.json": "5aa0cb10f10dacbcb86521f3b304b9de02504ee86952e772e828b84f8559dee8",
+    "project/data/chapter_eight_d43_diary_contract.json": "9f7ad98869aa11e2200e75531f51580643a574f8b31fce2e56b4ac2a4a8fc4e1",
+    "project/data/chapter_eight_diary_prose.json": "36494a0c2a9056def936d218f395a273cf4c08206642c62fd5ff6b373e718ee1",
+    "project/data/chapter_eight_early_transfer_scene.json": "b4101b90ba7285132326a044168f1338e56e5cf570dc0449087a7cbf0c7354c9",
+    "project/data/chapter_eight_home_prose.json": "b0948deff2b1f74f13aa22a5bebe6a827bc25bfb926cf2e4f8f75504bfc7b47a",
+    "project/data/chapter_eight_outdoor_prose.json": "2915b8e59bbd51627ab4066d8f9c2fcf3d0add31f0129fb6e397841151db941e",
+    "project/data/chapter_eight_photo_nodes.json": "d4276ebcb79b00ade044f240f2439c7d6eb85ae9249b66a72c941578df5c5365",
+    "project/data/chapter_eight_photo_optional.json": "b26571be1617cb1ba3cb1be20c23d81b46f833fc3404e0ac5a4aefa2a9c9b8d4",
+    "project/data/chapter_eight_photo_ordinary.json": "e6484c74a9cdec5fdcdcdef09d09908986563eccd68ed9bb2249637654bd97e2",
+    "project/data/chapter_eight_photo_results.json": "1911e2f359eddf68bdf3fe6671061030e693c1d21fc2503ed1053ba7c9b50dce",
+    "project/data/chapter_eight_warning_scene.json": "5e61b34ac76c0bcf1aefc3e86025df58b78da82a1fa80c327488a675e7d7bbec",
+    "project/data/chapter_five_bound_nodes.json": "618e01c1dc424201d2a17f385f6f462287f3894bd72ddc9ca833534d44573c4b",
+    "project/data/chapter_five_care_raw_prose.json": "3cbdfc29133223cd2bd73f213464c0a3899a54c8b73867d7098e9e2bf8e2d6a3",
+    "project/data/chapter_five_condition_home.json": "87a1307c7b7e354178362f04f62ce0298f7da36bb45c6d968bc26a7f48a8124a",
+    "project/data/chapter_five_d22_patch.json": "23208b1b073544b80c2b755737f037024b5abe3f4bd6f74dfb1a6fc6751f8a6a",
+    "project/data/chapter_five_diary_prose.json": "7fa4be26aa4bbfc86549e938aaec0315dd64e557d2a9e8ef588a87fb949c0d4a",
+    "project/data/chapter_five_home_prose.json": "9ec6071ef993eb46cd6eb7a189a1298e4b81b98ed48620b7398c376f7728d3c2",
+    "project/data/chapter_five_nodes.json": "c09a7012e5b13512da93c07ad9af10fb91bca0c3acf72ed1193962622dadd0a2",
+    "project/data/chapter_five_outdoor_prose.json": "6fe09e7eb16398b61471f8b9ef62485cf8650307a080b87bdf0539ec53b377cf",
+    "project/data/chapter_five_reading_revisions.json": "39ceb6f53e345605e2b4c163ff9c4f03416646022b3d530f7c27a170a74055fc",
+    "project/data/chapter_nine_bound_nodes.json": "dfeb88742701b6cd659abdc243ec29b81290882c7c918a9eb5f82e6cab820ca7",
+    "project/data/chapter_nine_care_raw_prose.json": "0dcd8d97dd11ae67fde8e0e423382ec867accc83579354d89923ec244d073dea",
+    "project/data/chapter_nine_condition_home.json": "f1b418f6e7fc9d53249895d857129bdb63bc08c5232770345ff38c59c058f671",
+    "project/data/chapter_nine_diary_prose.json": "d9c45d33bb61c41111bd8d64a8c91f6fefe2ff202546916dce4aff1bba66ba67",
+    "project/data/chapter_nine_ending_text.json": "08582c114e7c35645f2d4fdf6e5831fe944c67cf8ab4773e856e226cf130ebaf",
+    "project/data/chapter_nine_family_view.json": "d6c96075a4cf1e344aeecc8f8d13fc23d2da81be9a0dcbaaa42b052ad2ffb67a",
+    "project/data/chapter_nine_final_nodes.json": "b5043681a11b5ca3438be3a28a072c9467afd9044773035bcf4e61edd1406b17",
+    "project/data/chapter_nine_grandfather_recovery_text.json": "01d032d3c93f7ba868b428b9822a94f20f0033aff8c80f60d5129940e2ad8b89",
+    "project/data/chapter_nine_home_prose.json": "9d0d89d928d6a8fc093d745fd95c25853f3677af6d3082bbf6248a9c51fcfe94",
+    "project/data/chapter_nine_neighbour_end.json": "bd65282d9138a4308fb464a1ffce0d4f5f81aa69ce6636d87afb5276578a0ad4",
+    "project/data/chapter_nine_outdoor_prose.json": "e9d268c546a68cb365b304fe409537fd02ca2e5b78a59e00ec9ce2579d072c0b",
+    "project/data/chapter_nine_p1_context_text.json": "64384c98d382b54d1413a2a7bbb26c99fc27e746cadade02c624c33a0f6b9464",
+    "project/data/chapter_nine_photo_nodes.json": "5ce76169edc2f845350961a29a0baeef40ac4ca05c0a7076bdde8e7c47ffde68",
+    "project/data/chapter_nine_photo_ordinary.json": "17c688c6f56c140d55f2f10279399eb2a4b5ff95b1b4759f1c7b5254d4a6c48f",
+    "project/data/chapter_nine_photo_results.json": "01677655b34e9d4f7ecb9e6d1ffa13f582c4f3078cec6f4cd9f5bd958baacf65",
+    "project/data/chapter_nine_photo_scenes.json": "e02016b266e6ea1fb6213e694ea50e88d81db07b6fb8615f936446e34c18e3f6",
+    "project/data/chapter_nine_portrait.json": "007787eceac11e3452928245804d758a2e57641362298368dc6b329dc3cf5ac6",
+    "project/data/chapter_nine_transfer_prose.json": "473b92c2b48ffe84f6322ba6d1e84c460a8cfffea7a30b003b4369e042607eda",
+    "project/data/chapter_seven_bound_nodes.json": "8284f0e3c348f6f50a6b06321087ad5973bbfd543927928342ca56505d20a57f",
+    "project/data/chapter_seven_care_raw_prose.json": "625e2f1bd57fc8ebcfa523730b5ef733ce73e454862d5c953d57adcb2df9cb14",
+    "project/data/chapter_seven_condition_home.json": "0b450713298106e51ad6a53bfc3d20a21a97d558d676392ce4586cf8e40bdcb0",
+    "project/data/chapter_seven_diary_prose.json": "20e60732909c3bcd2b5a40638371ecef1606f737736ed4591722914b5ce2e1f4",
+    "project/data/chapter_seven_home_prose.json": "3fb2de8e2ff1c1fc70d6016067127762ee75db2053c42b6d6caace711bf3bcfe",
+    "project/data/chapter_seven_outdoor_prose.json": "e15b4c266383f94b16dc4e53024643e00b50a1390aee85153621bc38d42cea34",
+    "project/data/chapter_seven_photo_nodes.json": "4613e7aca0490e5677817c135e376a5ad9778e4d81573c09cf04981e6005aac4",
+    "project/data/chapter_seven_photo_optional.json": "f57415a272e5b9a5a1201d284cb8e0be71dad92c31b6b5ed134496583b943d51",
+    "project/data/chapter_seven_photo_results.json": "0d856cdb156ab4c12270f9e3037a9768cc112e4e4bf666384bec5832872f5df0",
+    "project/data/chapter_seven_reading_rules.json": "67b3ca1e078bc563de40d27cff8df4c4690a74849f8f91e87ac166fdad4aa487",
+    "project/data/chapter_seven_scoped_prose.json": "3b5281346b3479b353bf49c362ce8380d713d9ac180582827cc37fa423c99897",
+    "project/data/chapter_seven_uncle_notice.json": "df3fb02960ad55a220f76d19033908c324845ff6b5719d61aebc8528d9318a35",
+    "project/data/chapter_six_bound_nodes.json": "f70e79e699b2344ee9694723fd87b9c84efc98efe7363a3240f9869e0603d120",
+    "project/data/chapter_six_care_raw_prose.json": "6a7d5a9a2d59326be8bc0219ca4ae906b7c57fa09ed5c7d4abb498e2ea2008bb",
+    "project/data/chapter_six_condition_home.json": "c18d0bbee58c6e9039a9e0249cacb3e3de10dcf3a9e211987080f064aa9b1f31",
+    "project/data/chapter_six_diary_prose.json": "1180d7eb02be67d17a9c007d290173e7febf985b48560674887b2f3eb23aa542",
+    "project/data/chapter_six_home_prose.json": "eb2b19505af0e6af81840354648bb63f31a5d405b768178fd6462a25e88926b8",
+    "project/data/chapter_six_maintenance_revisions.json": "8605bc5d8a9bb78aae01cedca5f905e499b3c7f88e46bcbd1beebc0c881a4d09",
+    "project/data/chapter_six_outdoor_prose.json": "b187de9f1c1233ab020f4190d74e302655c5bdeefc18a58d7429bca041995345",
+    "project/data/chapter_six_reading_revisions.json": "1406fe1267a49726900f609dfd232b2026382d2b589832c3e216a60287f61363",
+    "project/data/city_chronicle.json": "3e9f6884db77a4955114eab061db1ac6136eb3d5d7c56674854d3553c07e148b",
+    "project/data/critical_reference.json": "cc6bc83a085c0c01da36b6398938b51704f401e69903d0be742d7b1536ce502c",
+    "project/data/current_diet_reference.json": "f39eb8a59aa6fc514a5ae31483e3ed6661adec9b87d3493af4aeda0461afcd4c",
+    "project/data/current_night_prose.json": "ba3550ae9a7f85f33f6148605300cff3dc187ac01234248c89e70a2dacfa210a",
+    "project/data/current_reading_reference.json": "af047772a5ca6d8095eaaaa2bab6aca0ff22db5eb6e8b41318e96c5d89a5621d",
+    "project/data/custody_chain_reference.jsonl": "d39df17235f1e932f3bf6920207a308930483d7059ccacd2afdc46a824f5f3dc",
+    "project/data/custody_choice_reference.jsonl": "1d879bf47b682c3c14ba28ff28fcb0f62f37f598d34ef46260cbf5fb365a1031",
+    "project/data/custody_constructor_reference.jsonl": "44d9fe74eb5a7bd1526332165adfb4f01276592dcbd0cb9803a601a6c16ebcaa",
+    "project/data/custody_diary_reference.jsonl": "e118a35c047da2a24f24f2682801ab742046eb551cc1649cc337630ccde0b6ba",
+    "project/data/custody_owner_return_reference.jsonl": "a992066c8e7107e4ba465216795abd1408c16d0723e3fc58d365566aef4101d3",
+    "project/data/custody_prose.json": "0a735dffcdcafd1c1270284a7c03a11ebd54b4784c6251aa3353a5859bed7698",
+    "project/data/custody_record_reference.json": "4ebb0f8eda785dd4c38ab8b5b0a1d1ff619a6da59226f6e9d2f826cc9c7b9207",
+    "project/data/custody_return_reference.jsonl": "aebfe2afcd12d279e45b5982e6046957d26b76cd99550c23b613a0221d1d78ad",
+    "project/data/day_eleven_lifecycle_reference.jsonl": "9a91dc321a2c94d9509c812fd750aa92c525efa18a6f536bc540bac917413cad",
+    "project/data/day_eleven_twelve_reference.jsonl": "772c1a89af892004cd45897bf77cac8ba4d049d8258d87bd2e53c80bd574a5d4",
+    "project/data/day_plan_reference.json": "37300c81c47f3f47498786afda8e5bf2f9a5b24f50c21aaf2d6480fee080aa01",
+    "project/data/day_ten_boundary_reference.jsonl": "5f7f6e0e6b87e6cfbc944d6d78ff9f6901fb06406bebe8b782a0d3fd3444a4f6",
+    "project/data/early_care_prose.json": "5bb13620eccf9df9ab9dbd23215ddb5d97f5f526f9d8363307416afb699c474b",
+    "project/data/early_care_reference.jsonl": "cba415a4008f1d500cfd5dd1729fd0b430cc82e020a7287b579359bf31698e22",
+    "project/data/early_focus_prose.json": "c84f00916d9bc64c1a7705b16637425f1010d671983830d380301c33ea9bd139",
+    "project/data/early_focus_reference.json": "a250f4646b0f698a91f71ca932612a2fd36bbefa9bf189e0b27459eb24819fa3",
+    "project/data/early_lifecycle_reference.json": "451ec28908f306dfdf51fe158ab0a919767ebf0c20a3daeb5b9167f6f828b718",
+    "project/data/early_lifecycle_reference.jsonl": "72aa5b2ef3aa29d90bd9778ff701aad5f91a2e7848bc9b28d6873b18b1ff500b",
+    "project/data/employment_bridge.json": "70908de8d5782e6a58aa65aa72f2ebe063a66833b62a3499863d7f0aa828686b",
+    "project/data/expedition_diary_prose.json": "0685791974561ef7b903c8b6713f202ffca8ec072589ee3baf5bfa548d4f6ce8",
+    "project/data/expedition_grandfather_diary.json": "b4944a9aa4eb316069c66e26b4a613b587febc05963afe5f5b790302a093126e",
+    "project/data/expedition_plan_rules.json": "1cdbeb90c757193b2f392a75ac586a2f702217b1d2caf275d71c150a1939db4d",
+    "project/data/expedition_return_prose.json": "71c16b22a328e169b5fc74f9969561093a56f5f2bf6750ee57c555e247859124",
+    "project/data/expedition_search_scenes.json": "c8742b1d5ea80487b6560f66807e819d6b0bf003a9eae16c1922ea1be20b0f6e",
+    "project/data/expedition_special_prose.json": "e3568e87d46a79906f7086a20b37fde10e6ca2cd561981b4ef4bc2d20f1bb05c",
+    "project/data/family_care_prose.json": "31dd7115a9c5da950dbea80367d034146917facbe52397305111c8863012f228",
+    "project/data/family_followup_rules.json": "651cb5d07de3ca83d9a980dbca04054278edb96b8804bf8222a3a359c7769ec9",
+    "project/data/family_prose_reference.json": "54694bedd39137f885d0a9d9ee16cb4907071e9444b368fd04ece2efa0554442",
+    "project/data/first_day_focus_event.json": "ce66b79a9c99a80dd7d80276e9d0ca64548888bcb5c65a47717092effe9ab333",
+    "project/data/first_focus_reference.json": "42b8b199b951b7991b4969419eb62de360ef8ba544124154aec387f401b278c6",
+    "project/data/first_night_reference.json": "5eb09d65b3f6e9904aa6aa380e574c185b1bb0f5b812905fc6a9e3714841f8ee",
+    "project/data/first_week_focus_prose.json": "4da0e0fb8396ddf730b991cd8deced4daf8a793875f8284bc88e4d507b4c8e7b",
+    "project/data/first_week_focus_reference.jsonl": "35784ce1b303bea3d9e64787f6b602d4e1d37759631f3a5b0d0ca64c3e63279c",
+    "project/data/first_week_home_prose.json": "12f3735ca7b3ec665cd85b31e15a7e405ea1e348acf1535b847f0314b61c3d71",
+    "project/data/first_week_home_reference.jsonl": "f7a238b1aff164c6b65f61580d23cbebcd2cd2871b80ba13ae6542a68d064fbf",
+    "project/data/first_week_lifecycle_reference.json": "5ef2b052178b853ae75e0a77fdffb114683b770f55fd2795e0a74d164ab0760f",
+    "project/data/first_week_lifecycle_reference.jsonl": "3e04051c2571d13a54819c606e2d098ffd87da1325a9737f014fd4e40b1879a5",
+    "project/data/first_week_missing_focus_prose.json": "28ef3ba0a2b5b86fce42dcfb28f49fa5c134647f5937a8640a1166cb6382dd4f",
+    "project/data/first_week_mixed_reference.jsonl": "d70e09fb9cca4478d7da9f9c727f7a3757504959d6a20a2e3bcd3c2a5e69da6a",
+    "project/data/first_week_outdoor_prose.json": "d47c89dbba62e75bfc7b4075f8a54388ab8b6b8d8aba8f33103da4a01166cfe2",
+    "project/data/first_week_plan_reference.jsonl": "49384b933714a566742715083e0665ec3ac20581b2eb86ed58a88414799b6a37",
+    "project/data/focus_effect_reference.json": "2d7340674da68c4cff149ba9c6ce2dd27968e8ed68a65be3866b0f38d0d58d58",
+    "project/data/focus_events.json": "9c932acaa639c9e5062cb17e7fceb2166a3b35334bd8b78489afa6342a17d8e0",
+    "project/data/focus_narrative_fragments.json": "d31ad00be34168ccd517a6ca21d977258613781625a1ac1c3977ef0fdadfe754",
+    "project/data/focus_reselect_reference.jsonl": "598d8764c2b6776df10baeeb395d66b776389e0fa3c9a990888020a663ce2221",
+    "project/data/grandfather_home_presentation_templates.json": "7490cbd5a9475ef983f686fd4e484df7bbb0002df4eb897a2c0878bd5359e7f8",
+    "project/data/grandfather_home_raw_scenes.json": "e7793f4708ae2f048808349324b69eb1146143fe745fc24f9bb5cd39940796f4",
+    "project/data/health_reference.json": "4abe519498a611ee24efd00628df3fd99f00317d6511ab8fe39619f691e449e5",
+    "project/data/home_admission_reference.json": "e6e4b0ea7605cecef809414fc3474545605aca63b73d3efcf2c37309b9f655ae",
+    "project/data/home_care_components.json": "d5981c20fcabf73747dcddaefa73a3af12dec34fde643dd9075b190353d6aaba",
+    "project/data/home_care_components_reference.jsonl": "a4208216d26bd556566fefaac620b8d4170ca82d1c842db017b87629b90e43d9",
+    "project/data/js_json_reference.json": "f9777cc7e9472e0b63badea2923bc319ba30fce00380ef8fefc5342d8675deaa",
+    "project/data/late_day_keys.json": "40b8ef311bd0b88b09b9488a92a6210fbd792f2f078f2108b180f6420379cd61",
+    "project/data/later_public_family_snapshots.json": "6c2fccea0ba8b5281980e88e7f1dfc6d7b33899724998ba8ad23bae9c8639709",
+    "project/data/later_scene_shells.json": "4abb6f15c3fca19a38e2104a614721e516f75a7425ddda3a3de7c5b37080adb8",
+    "project/data/loadout_catalog.json": "34753a878832e4b408b3b7d972685b0dc4bf384dfd89f40ecd0e7421b8b74185",
+    "project/data/loadout_reference.json": "acb1264cba1c3bc2f60c500a7ea5481324395df6abeed8cdd30982e2538aa6f2",
+    "project/data/loadout_skin.json": "91d955f9a81d4d418b0a790cf31d30f7ca2d1e5e23fcd0f01054c8c0d61ee0ce",
+    "project/data/menu_contract.json": "c6780bfcba1f20f6b5341bb444c64e0c7298e5fc332c038e1e10a7534102d37f",
+    "project/data/message_thread_prose.json": "f2e05921c6f3484bf716e252fba90780bd6aaa5689fac5163ee324e487ae8192",
+    "project/data/missing_care_prose.json": "064bbd61cd0e15175aaa641ac8f789da6437365a2c67835cea98a8d1f86bcd9a",
+    "project/data/missing_family_focus_reference.jsonl": "6babb2bb9499a471757e00f29f49988caebf7ae112cd6cb03f9d204fea5cd99c",
+    "project/data/missing_family_lifecycle_reference.json": "a3a4a1026a92feeba0c87b8f350815e6cf06147434a2044a3fc6370962745b26",
+    "project/data/missing_family_lifecycle_reference.jsonl": "208910c72d1e1a1db3ca2d401a7835eb6a8b4fcf10a5e0cc6c1020ef7b8a6b6c",
+    "project/data/missing_home_prose.json": "aa69a82e995c82445e78adbfcd3550ee21042286935eefa836489aeef9254573",
+    "project/data/mother_care_prose.json": "7c7113eb610c20a3cffe11267b8870944520bf07d659c2f3548d853e91259ac3",
+    "project/data/mother_crisis_morning_prose.json": "c0d9da54a23033d2bda58bfd130369be3140dabd7bb21219fc834d6c65021a1c",
+    "project/data/mother_crisis_prose.json": "868039a151da7aabe22015f666645ae3fbb7f61f2e36634820ac4e2f21ace064",
+    "project/data/native_base_state_template.json": "ac0633cf450f19b7f9b5d697fd4a656efb59e4a04aacedaea150e3f378080104",
+    "project/data/native_help.json": "c5bcb7b950f43d71cc3d9c488d836979814e3c99124965b8a2932b0c588e0274",
+    "project/data/neighbour_day.json": "ccdea99b0a324cf789cb51369a5955913255a429dc1dae33e38fc0d97a95bd20",
+    "project/data/neighbour_policy_reference.jsonl": "15618dc1e6a4818eadd72456d0ddaa28d0f9dab1494d24895138341c8ceb78d5",
+    "project/data/night_closure_reference.json": "f75c40dc6ddcf626c315d79ed4829cb32abf1fd60a36bfb9f11945f7369988a2",
+    "project/data/night_dawn_reference.json": "2fb00ad83c191daf8ee3a411111be606821629a9332bf7bce16b4ce8c4682bd5",
+    "project/data/night_delivery_reference.json": "8bdc922b247fb094bc475bc00587a8d5ecbe97050b023c86dbc80517b99cd1a2",
+    "project/data/night_effect_reference.json": "4e4e6ef6458ca94a7d393ea389135a0bddb90403591e06ef679b7b206cd0f0f2",
+    "project/data/night_event_reference.json": "0d39b472b31164ecb7f3bb2d2ac0e47e49ba9a517de2af68b37be17d6fffab8f",
+    "project/data/night_guard_reference.json": "543259e6cf584d4399408955210dfb6a341b9848df51f623da5773861a409470",
+    "project/data/night_preview_reference.json": "28223b12e2a051a12cfa8e8da76828c8fde4cf4f78917f930c08c19b53dc6b42",
+    "project/data/night_reading_bank.json": "1aac7011eb409bd10ca1c61b33826cf5a698a60467ba05bac8005e549842f26e",
+    "project/data/night_reading_reference.json": "940d5be513967832845a365347f327142ff51d7de3e97e2b02f7743611d3e875",
+    "project/data/opening_reference.json": "450330b9ebd0dbba98f5be36ebe2c538daba170c56dab99c9d1efd0b5de6b118",
+    "project/data/opening_text.json": "9f9c7dd186eb8f8a2a89c138dd8b9f593a08eeffd19806cb820916602b3db311",
+    "project/data/p1_prose.json": "6e88a1fc1314272bca98e52ee0f830d51f69bb1ba4f4b89eff2a18afa7b0c80f",
+    "project/data/parcel_memory.json": "ba5fee76867c754b2e2a4baccb08375f9acb38d7ab5a41cb21b69b3b92dd8250",
+    "project/data/parcel_prose.json": "8161e473efdabdf71a3d76a066ae198cc0e89732d1f8a64b051930c35d4faf50",
+    "project/data/parcel_webm3_prose.json": "1ca96d802878e44a8e9477fb69e3566f91b8b262b0141a66b57b87740b7ec4aa",
+    "project/data/photo_local_text_38.json": "6042933f164f4f67fe8571884f18fc953269fe52269aacb9b14cc7fc5321de1f",
+    "project/data/pigeon_pickup_prose.json": "03f944c96ea32c3a8f89cc5701f62d82e6fa14cbb0afd9717f38069cc382fa20",
+    "project/data/pre_photo_care_flow_reference.jsonl": "5ece7885401ad6858e49e8b4472fa2951982e85aca610b5c3edc68c65688411f",
+    "project/data/pre_photo_care_raw_prose.json": "e18139df0c8062df8cbd43f09a198fc851883a0964bff168a630de7d1d35908d",
+    "project/data/pre_photo_choice_reference.jsonl": "da7c535be5f9ac483ea32c689401cb9acded97c7705244481db4c0ef4b0eba2d",
+    "project/data/pre_photo_condition_home.json": "6213b6b6d1cbadf747506f6aad045cb0cb28cd56e9a29d18a1f13a180264ad9d",
+    "project/data/pre_photo_condition_home_reference.jsonl": "85062098fc270b3096ab010da00e6b5bb5dbca00f5239fdb7f3c547c7b86fa3e",
+    "project/data/pre_photo_home_base_reference.jsonl": "b948e5bdd0dd229da8c895943b18987ac7964c9300f35f2d3d095a7f564b5c7f",
+    "project/data/pre_photo_home_prose.json": "03a6e0cb2a31a9f452b457f2c85582b92567d9a58e5a98fb0573764d5fc63562",
+    "project/data/pre_photo_outdoor_prose.json": "8f1bc4fb341465e91f20f26a6b0a4012b75eebe0f85b1e44b78ee4c3e65b1085",
+    "project/data/pre_photo_outdoor_reference.jsonl": "2c104c56a76034546ec7f560cc14ccbfe6bf9d1b1da0bf6c9805388c621c34e6",
+    "project/data/pre_photo_plan_reference.json": "488702d3ff6ea53f4c01d8bf3f539a8928373acf5e90a507bbf304cfaeeba141",
+    "project/data/pre_photo_return_reference.jsonl": "bf7a5a60889b0021ac5fe3b3e52264bce4ec08728fa0e6ee98d7bb3f52ff865c",
+    "project/data/primary_button_states.json": "464a1f79166fa99fda52c7993bca555a70ca88e2c89176af96839bf74aef9ea0",
+    "project/data/rng_reference.json": "c3bb97f67935d1a80295f8c8824ca55494b46c37468a41d1174acee7f2241528",
+    "project/data/room_bindings.json": "df87fd221dd05fe88e6741cef966e4a29ee546027471ab19276f48c78b73971d",
+    "project/data/rope_editorial.json": "b67345d7194041fe2419d774db698d74a6c34edb553508296fe036b4ae36ac92",
+    "project/data/rope_memory.json": "fa254cabf9b5b916da1e20460973290e5f80de4a77989b5f132feaa425936dd9",
+    "project/data/rope_prose.json": "77a8bde4d9f5ce67f7afb7fd5de97236cb57a66b2e568f1f673960342de27f63",
+    "project/data/second_night_reference.json": "a8e543fcb11eec069dbbf4d2ceae6ebd71e9fad2fcc7f366f53efef4535021c3",
+    "project/data/solitary_lifecycle_reference.jsonl": "a14e41234835a440e979e4a3e4fa954a98baf665902a1b001df750783bf3fb08",
+    "project/data/solitary_packet_reference.jsonl": "9284973c37c7aa2e1f75d6db5a4ef6271bf564d89f71e511bbc21c8550b50fb7",
+    "project/data/story_initial_state.json": "716b4665c680609fbcdcf46a3269e45d7f12b6218f4f432c2711728f4400b04d",
+    "project/data/survival_reference.json": "0afaaa526a2f9ef5a357872711a70ad09757a4769a2bc646ce7c6095b8b272fc",
+    "project/data/survival_settlement_reference.json": "d406a9886fb311a82a0b981da0508301ba92a41a09350d362517ff35a63e6818",
+    "project/data/svg_layouts.json": "6b04c70f8aab9883487b67f8060cbd02796b266587b19064c2b6606e42300abd",
+    "project/data/tool_guide.json": "590bc30bbaf444bae77bf3be867722e066ad6b13e3ff033f2c08b4a5b44df6dc",
+    "project/data/uncle_boundary_prose.json": "835cdba587c3b8af8b1b229b029f442defe25687a35fdc3b3e7d81abb08ceebe",
+    "project/data/uncle_boundary_scenes.json": "10e28d68f9c24f20b2171242a4b8e94362bd518804263c072d03ecbc127020ca",
+    "project/data/uncle_crisis_diary_prose.json": "8e5aa2be3a34b2ca0c9882ce5f3afaa3afde62feec32c16d9fe6bbd74ebe037a",
+    "project/data/uncle_crisis_morning_prose.json": "3a08698d7833b7e7b99bd092c9a6c86cd2dff955e314f715fdf65cc5cb7c6410",
+    "project/data/uncle_crisis_prose.json": "a888c1171663ea784f49e21c037172d91d54a14a2aa491bf0702df96b24295f3",
+    "project/data/weather_catalog.json": "ed0de16dd68f2b4053370f5e394cc4caf9c2e21fdce049ec7ae476330759355a",
+    "project/project.godot": "4f365940ca8a6800fb66ade354a0fbc84fdad8c6c0e1922548416a8e9f052d9b",
+    "project/scripts/chapter_eight_care_prose.gd": "514e8743f81e9f74d593b33c923ad2ac2b4c2b6bd8eb5c2dfd2a32444064653d",
+    "project/scripts/chapter_five_care_prose.gd": "16541ad6c416c58ac4edd827f4e386cb9e12945b6d7b2be5fa3785df5f42c7f3",
+    "project/scripts/chapter_nine_care_prose.gd": "c3c52b923eb3416d8f752fb0f75ac82094dbcc97be478e16664ef14fc844380a",
+    "project/scripts/chapter_seven_care_prose.gd": "1417c69763bbd7a69e71618ec2f1886db44af17f7b4e8e2b4ab36b5548ae4976",
+    "project/scripts/chapter_six_care_prose.gd": "ee845ccde102391f1194233d5e9398a219ac26c8958b2d75485cfc2be229c68b",
+    "project/scripts/component_effects.gdshader": "309bc7077c6f6f7e7b8e00de319b33723e6ca850a878b0d3babb62b05fa499b9",
+    "project/scripts/family_prose.gd": "eb0bf642bc9bbbbd67ec142bce14664b73f0d5bb8ffeb605e05a6f9c47f37819",
+    "project/scripts/game_controller.gd": "4d920660ea3f7b08944d614a87990a4db434b57a3728b468c5e9a45863faa746",
+    "project/scripts/game_model.gd": "1d687e10cd706d179dd1c17b49a02c785df73367819ebcae5735e31898e0aa5e",
+    "project/scripts/home_care_prose.gd": "8740874a9f06d10fa2b44067e783f564060e2f6cc54203e485af50096d300775",
+    "project/scripts/js_json.gd": "9804bc3567d257b4152a8bb54cb6b18ffacba7f9693c353d34f8d080ce99e548",
+    "project/scripts/layout_layer.gd": "8de16f9fcb6ca23653936f5893b1f7de2bc01609a5ed7a573c95d231b50d1a88",
+    "project/scripts/layout_view.gd": "a2507e8ec0367eb22bfbd76cb292074d913829117c90a384c2eae566aad3f8fd",
+    "project/scripts/native_continuation.gd": "df8e6419de0d93ecb3670c43d77bf95de5148f1d4f435a144e995fd7d362cd68",
+    "project/scripts/native_continuation_store.gd": "b8091b7636eb7541e6d148c7b4fd65b73636739736ffc3a411db92221d07043e",
+    "project/scripts/native_rng.gd": "5601499f011fb65a2462f37ce4bf0f4918df8d9bb8f85ae06acfe20218287629",
+    "project/scripts/native_save.gd": "d148730712c8010c1ea4afa6f09199784a11d0efdc28c2368d89195c53422276"
+  },
+  "source_unchanged_during_run": true,
+  "test_source_unchanged": true,
+  "elapsed_seconds": 4552.278,
+  "execution_segments": 1,
+  "resumed_completed_suites": 0,
+  "visual_acceptance": "NOT_RUN",
+  "full_gameplay": "NOT_IMPLEMENTED",
+  "headless_only": true,
+  "passed": true
+}
