@@ -8,11 +8,7 @@ var animal_tab: String="poultry"
 var night_choice_page:=0
 var save_store=SaveStore.new()
 var save_path: String="user://jing-native-v1.json"
-var save_return_screen: String="menu"
-var save_text: String=""
-var save_preview: Dictionary={}
 var save_notice: String=""
-var save_editor: TextEdit
 const Model=preload("res://scripts/game_model.gd")
 var model=Model.new()
 var screen: String="menu"
@@ -28,17 +24,13 @@ var focus_target: String=""
 var primary_button_states: Dictionary={}
 var primary_bindings: Array=[]
 var city_chronicle: Array=[]
-var reading_font_size:=19
-var focused_reading:=false
-var settings_path: String="user://reading_settings.cfg"
-var settings_return_screen: String="menu"
-var settings_focus_control: String="reading_font_18"
-var settings_focus_layer
-var reading_preferences_error: String=""
+const READING_FONT_SIZE: int=19
 func _ready() -> void:
-	_save_ux_parent_0__ready();get_tree().auto_accept_quit=false;autosave_expected_sha=save_store.file_fingerprint(save_path);autosave_seen=state_stamp();autosave_ready=true
+	_save_ux_parent_0__ready();get_tree().auto_accept_quit=false;autosave_expected_sha=save_store.file_fingerprint(save_path);autosave_seen=state_stamp();autosave_ready=true;get_window().title="京字第一号证据"
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	# Retired shortcuts must not fall through to layout_view's debug pager.
+	if event is InputEventKey and event.keycode in [KEY_F5,KEY_F6]:get_viewport().set_input_as_handled();return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_ESCAPE and screen in ["autoSaveFailure","confirmQuit","confirmNewGame"]:screen=close_return_screen if screen=="confirmQuit" else autosave_return_screen;render_screen();get_viewport().set_input_as_handled();return
 	_save_ux_parent_0__unhandled_key_input(event)
 
@@ -65,26 +57,44 @@ func use_layout(id: String,remove: Array=[]) -> bool:
 	for layout in layouts:
 		if layout.id==id:
 			var copy: Dictionary=layout.duplicate(true);var ops: Array=[]
+			# Full figures belong to the shared residence scene. Portraits on cards
+			# remain part of each panel, including cards describing absent people.
+			var shared_room: bool=not model.state.is_empty() and copy.operations.any(func(op):return not background_person(op).is_empty())
+			var background: Array=room_background_operations(room_projection()) if shared_room else []
 			for i in range(copy.operations.size()):
-				if i in remove:continue
 				var operation: Dictionary=copy.operations[i]
-				var people_ids: Dictionary={"luo":"罗瑾","mother":"母亲","grandfather":"外祖父","uncle":"安仁叔叔"}
-				if not model.state.is_empty() and people_ids.has(operation.get("id")) and not model.present(people_ids[operation.id]):continue
-				if focused_reading and screen not in ["settings","menu","save"] and operation.get("type")=="image":
-					var box: Array=operation.get("box",[])
-					if operation.get("id")=="room" or people_ids.has(operation.get("id")) or (box.size()==4 and box[0]==0 and box[1]==0 and box[2]==copy.canvas[0] and box[3]==copy.canvas[1]):operation.opacity=operation.get("opacity",1.0)*0.32
+				if shared_room:
+					if operation.get("id") in ["room","night_room","night"]:
+						ops.append_array(background);continue
+					if not background_person(operation).is_empty():continue
+				if i in remove:continue
+				if operation.get("type")=="image" and operation.get("id") in ["night_room","night"]:
+					operation=op_from("UI06_main",0).duplicate(true)
 				ops.append(operation)
 			copy.operations=ops;return present_layout(copy)
 	load_errors.append("missing route layout: "+id);return false
+
+func background_person(operation: Dictionary) -> String:
+	if operation.get("type")!="image":return ""
+	var key: String=str(operation.get("id",""))
+	for person in {"mother":"母亲","luo":"罗瑾","uncle":"安仁叔叔","grandfather":"外祖父"}:
+		if key in [person,"full_"+person,person+"_full",person+"_ill"]:
+			return {"mother":"母亲","luo":"罗瑾","uncle":"安仁叔叔","grandfather":"外祖父"}[person]
+	return ""
 func image_node(path: String,box: Rect2) -> TextureRect:
 	if not textures.has(path):textures[path]=load(path)
-	var image:=TextureRect.new();image.texture=textures[path];image.position=box.position;image.size=box.size
-	image.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;image.stretch_mode=TextureRect.STRETCH_SCALE;image.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	var image:=TextureRect.new()
+	# Set the minimum-size policy before assigning the requested rectangle.
+	# Otherwise the source texture's native size clamps small icons and panels.
+	image.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	image.texture=textures[path];image.position=box.position;image.size=box.size
+	image.stretch_mode=TextureRect.STRETCH_SCALE;image.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	holder.add_child(image);return image
 func action(name: String,value: String="",person: String="") -> void:
 	model.dispatch(name,value,person);screen=model.state.phase
 func render_screen() -> void:
-	if screen!="pigeonPlan":_pigeon_ui_parent_0_render_screen();return
+	if screen!="pigeonPlan":
+		_pigeon_ui_parent_0_render_screen();apply_player_copy(holder);return
 	controls.clear();primary_bindings.clear();transition_pending=false;render_night_plan()
 	for button in controls.values():button.disabled=true
 	var shade:=ColorRect.new();shade.color=Color(0,0,0,0.68);shade.size=Vector2(1920,1080);shade.mouse_filter=Control.MOUSE_FILTER_STOP;holder.add_child(shade)
@@ -99,6 +109,8 @@ func render_screen() -> void:
 	var ops: Array=[]
 	for index in indexes:
 		var op: Dictionary=op_from("UI17_supplementary",index).duplicate(true)
+		# Keep the status explanation and return control on the modal paper.
+		if index==0 or index==5:op.box[3]=580
 		if index==12:op.text=("已准备" if feed else "准备")+"米粮给信鸽"
 		if index==19:op.text="米粮 ×1 备5夜；当晚先喂再判。"
 		if index==28:op.text="约定截止第"+str(int(request.get("pickupDeadline",0))+1)+"日；当前第"+str(int(model.state.day)+1)+"日。"
@@ -121,24 +133,34 @@ func render_screen() -> void:
 	if not editable:reason="今晚已经确认，不能修改原安排。"
 	elif not note and not model.pigeon_action_allowed("send"):
 		reason="当前不能放飞，可取消原安排后返回。"
-	prose(reason,Rect2(595,745,725,65),20)
-	native_text("返回夜间安排",Rect2(820,820,280,42),23);hit("pigeon_back",Rect2(800,812,320,58),func():screen="night","返回，保留预选")
+	prose(reason,Rect2(615,745,680,60),20)
+	image_node(op_from("UI25_daytime",15).path,Rect2(800,812,320,58))
+	image_node(op_from("UI25_daytime",16).path,Rect2(815,826,28,28))
+	center_text("返回夜间安排",Rect2(850,820,250,42),23);hit("pigeon_back",Rect2(800,812,320,58),func():screen="night","返回，保留预选")
 	observe_autosave()
+	apply_player_copy(holder)
 
 func begin_game(seed: String="") -> void:
-	if autosave_enabled and FileAccess.file_exists(save_path):
-		new_game_seed=seed;new_game_expected_sha=save_store.file_fingerprint(save_path);new_game_notice="已有磁盘记录会先另存备份，再开始新记录。当前未保存进度将被替换。";autosave_return_screen=screen;screen="confirmNewGame";return
-	start_new_game_now(seed)
+	new_game_expected_sha = save_store.file_fingerprint(save_path)
+	new_game_expected_backup_sha = save_store.file_fingerprint(save_path + ".bak")
+	var has_saved_record: bool = FileAccess.file_exists(save_path) or FileAccess.file_exists(save_path + ".bak")
+	if autosave_enabled and (has_saved_record or not model.state.is_empty()):
+		new_game_seed = seed
+		new_game_notice = "已保存的记录会先保留。当前未保存进度将被替换；取消可继续当前游戏。"
+		autosave_return_screen = screen
+		screen = "confirmNewGame"
+		return
+	start_new_game_now(seed, new_game_expected_sha)
 
 func render_menu() -> void:
-	_aux_parent_3_render_menu();reconnect_button("menu_5",func():open_native_feedback())
+	_aux_parent_1_render_menu()
 
 func render_intro() -> void:
 	var remove: Array=[6,7]
 	for i in range(17,28):remove.append(i)
 	use_layout("UI02_05_02_normal",remove)
 	var text:=RichTextLabel.new();text.position=Vector2(752,338);text.size=Vector2(640,381);text.bbcode_enabled=false
-	text.add_theme_font_override("normal_font",fonts[FONT_REG+"#2"]);text.add_theme_font_size_override("normal_font_size",reading_font_size)
+	text.add_theme_font_override("normal_font",fonts[FONT_REG+"#2"]);text.add_theme_font_size_override("normal_font_size",READING_FONT_SIZE)
 	text.add_theme_color_override("default_color",Color("372b21"));text.add_theme_constant_override("line_separation",5)
 	var paras: Array=[]
 	for n in ["01","02","03","04","05"]:paras.append(model.opening_copy("pro."+n))
@@ -147,7 +169,11 @@ func render_intro() -> void:
 	hit("menu",Rect2(1315,155,104,55),func():screen="menu","返回主菜单")
 func render_tutorial() -> void:
 	var page:=int(model.state.tutorialPage)+1
-	use_layout("SVG_jing_ui03_reconstruction_20261024_UI03_page"+str(page)+"_reconstruction")
+	var layout_id: String="SVG_jing_ui03_reconstruction_20261024_UI03_page"+str(page)+"_reconstruction"
+	use_layout(layout_id,[28,30] if page==2 else [])
+	if page==2:
+		design_text(layout_id,28,"从记录册查看家人与家用；菜单可继续游戏、查看说明或返回主菜单。")
+		design_text(layout_id,30,"进度会自动保存；若保存失败，请先查看提示。")
 	if page==1:
 		hit("tutorial_skip",Rect2(1037,810,263,95),func():action("tutorialSkip"),"直接挑选物资")
 		hit("tutorial_next",Rect2(1306,799,261,89),func():action("tutorialNext"),"下一页")
@@ -157,18 +183,19 @@ func render_tutorial() -> void:
 func render_loadout() -> void:
 	var remove: Array=[9,15,22,28,11,12,17,18,19,24,25,30,31,32,96,97,98,99,100,101,104,105,107,109,111,112,113]
 	for i in range(39,94):remove.append(i)
+	remove.append_array([37,38,94,95,102,103,115,116,117,118,120,122,124])
 	use_layout("SVG_jing_ui04_reconstruction_20261024_RECONSTRUCTION",remove)
 	for p in range(Model.PEOPLE.size()):
 		var person: String=Model.PEOPLE[p];var x:=280+p*275;var bag: Array=model.state.loadout.assigned[person]
-		native_text(str(bag.size())+"/4格 · 负重 "+str(model.weight(person))+"/"+str(Model.CAPACITY[person]),Rect2(x,273,269,30),20)
+		native_text(str(bag.size())+"/4格 · 负重 "+public_number(model.weight(person))+"/"+str(Model.CAPACITY[person]),Rect2(x,273,269,30),20)
 		hit("carrier_"+str(p),Rect2(x,166,269,137),func():action("selectCarrier",person),"选择"+person)
-		if person==model.state.loadout.carrier:
-			var active:=native_text("当前携带人",Rect2(x+72,465,150,24),18);active.modulate=Color("956432")
 		for slot in range(bag.size()):
 			var id: String=bag[slot];var box:=Rect2(x+48+(slot%2)*98,319+int(slot/2)*74,76,62)
 			image_node(skin.items[id],box)
 			hit("remove_"+person+"_"+id,box,func():action("removeLoadout",id,person),"取下"+model.item(id).name)
 	var pool: Array=model.ensure_pool();pool_row=clampi(pool_row,0,maxi(0,int(ceil(pool.size()/6.0))-2))
+	design_text("SVG_jing_ui04_reconstruction_20261024_RECONSTRUCTION",37,"可选物资 · "+str(pool.size())+"件")
+	design_text("SVG_jing_ui04_reconstruction_20261024_RECONSTRUCTION",38,"当前携带人："+str(model.state.loadout.carrier))
 	var assigned: Array=model.assigned_ids()
 	for visible_index in range(12):
 		var idx:=pool_row*6+visible_index
@@ -184,13 +211,24 @@ func render_loadout() -> void:
 	native_text(info.name,Rect2(1140,500,250,40),28);image_node(skin.items[selected_item],Rect2(1187,540,142,107))
 	var hint:=native_text(info.hint+"\n负重 "+str(info.weight),Rect2(1140,651,245,80),18);hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	var totals: Dictionary=model.totals()
-	native_text("米粮 "+str(totals.rice)+"    饮水 "+str(totals.waterCap)+"    木料 "+str(totals.wood),Rect2(300,835,750,30),20)
-	if model.state.error!=null:native_text(model.state.error,Rect2(285,875,800,35),18)
-	hit("pool_up",Rect2(1080,500,45,40),func():pool_row-=1,"上一行")
-	hit("pool_down",Rect2(1080,775,45,40),func():pool_row+=1,"下一行")
-	hit("review_tutorial",Rect2(280,875,160,45),func():action("backLoadoutTutorial"),"回看教程")
-	hit("recommend",Rect2(630,875,200,45),func():model.recommend(false),"一键推荐")
-	hit("clear",Rect2(920,875,180,45),func():action("clearLoadout"),"重新挑选")
+	var layout_id: String="SVG_jing_ui04_reconstruction_20261024_RECONSTRUCTION"
+	design_text(layout_id,107,"米粮 "+public_number(totals.rice))
+	design_text(layout_id,109,"饮水 "+public_number(totals.waterCap))
+	design_text(layout_id,111,"木料 "+public_number(totals.wood))
+	if model.state.error!=null:
+		var notice:=prose(str(model.state.error),Rect2(1140,734,250,73),18);notice.name="loadout_error"
+		notice.add_theme_font_size_override("normal_font_size",18)
+	var last_row: int=maxi(0,int(ceil(pool.size()/6.0))-2)
+	for row in [[94,pool_row==0],[95,pool_row==last_row]]:
+		var arrow: Dictionary=op_from(layout_id,row[0]).duplicate(true);arrow.opacity=0.35 if row[1] else 1.0;add_display_op(arrow)
+	hit("pool_up",Rect2(1080,500,45,40),func():pool_row-=1,"上一行").disabled=pool_row==0
+	hit("pool_down",Rect2(1080,775,45,40),func():pool_row+=1,"下一行").disabled=pool_row==last_row
+	for index in [120,122,124]:
+		var caption: Dictionary=op_from(layout_id,index).duplicate(true);caption.size=18;add_display_op(caption)
+	hit("review_tutorial",Rect2(800,848,115,72),func():action("backLoadoutTutorial"),"回看教程")
+	hit("review_tutorial_top",Rect2(1212,42,192,60),func():action("backLoadoutTutorial"),"返回教程")
+	hit("recommend",Rect2(921,848,113,72),func():model.recommend(false),"一键推荐")
+	hit("clear",Rect2(1034,848,110,72),func():action("clearLoadout"),"重新挑选")
 	var depart:=hit("depart",Rect2(1171,837,250,69),func():model.start_opening();screen=model.state.phase,"确认携带")
 	depart.disabled=false
 	if model.state.loadout.get("confirmRecommendation",false):render_recommendation_confirmation()
@@ -206,7 +244,7 @@ func prose(text: String,box: Rect2,_design_font_size:=24) -> RichTextLabel:
 	var control:=RichTextLabel.new();control.position=box.position;control.size=box.size
 	control.bbcode_enabled=false;control.text=text
 	control.add_theme_font_override("normal_font",fonts[FONT_REG+"#2"])
-	control.add_theme_font_size_override("normal_font_size",reading_font_size)
+	control.add_theme_font_size_override("normal_font_size",READING_FONT_SIZE)
 	control.add_theme_color_override("default_color",Color("372b21"));control.add_theme_constant_override("line_separation",8)
 	holder.add_child(control);return control
 func render_road() -> void:
@@ -224,7 +262,8 @@ func render_road() -> void:
 	var rope:=hit("choice_1",Rect2(702,710,631,92),func():model.choose_opening(1),"用绳索拖出长木")
 	rope.disabled=not available
 func render_event_result(text: String,label: String,continuation: Callable) -> void:
-	use_layout("UI10_main",[9,10,19,21,22,23,24,25,26,28,29,30,31,32,35])
+	use_layout("UI10_main",[9,10,19,20,21,22,23,24,25,26,28,29,30,31,32,35])
+	var leaves: Dictionary=op_from("UI10_main",20).duplicate(true);leaves.box=[1128,251,90,90];add_display_op(leaves)
 	native_text("第1日 · 1937年12月13日",Rect2(58,48,320,35),24)
 	native_text("逃难途中",Rect2(58,86,260,30),20)
 	native_text("走过这一处",Rect2(521,282,450,40),26)
@@ -235,10 +274,31 @@ func render_arrival() -> void:
 	var o: Dictionary=model.state.memory.opening
 	render_event_result("\n\n".join(model.opening_arrival_copy())+"\n\n抵达后清点\n"+"\n".join(o.receipt)+"\n米粮 "+str(o.arrived.rice)+"，饮水 "+str(o.arrived.water)+"/"+str(o.arrived.waterCap)+"，木料 "+str(o.arrived.wood),"写下今天",func():screen="diary")
 func render_diary() -> void:
-	use_layout("SVG_jing_ui12_reconstruction_20261024_UI12_reconstruction_v04",[13,15,16,17])
-	native_text("罗瑾的日记 · 第1日",Rect2(578,310,420,40),24)
-	prose("\n\n".join(model.state.memory.opening.diary),Rect2(458,433,780,150),23)
-	hit("night_plan",Rect2(1013,638,266,85),func():
+	render_diary_page("\n\n".join(model.state.memory.opening.diary),1,"night_plan")
+
+func render_diary_page(text: String,day: int,button_id: String) -> void:
+	var diary_layout: String="SVG_jing_ui12_reconstruction_20261024_UI12_reconstruction_v04"
+	var operations: Array=room_background_operations(room_projection())
+	for entry in [[3,[280,100,1120,760]],[4,[280,593,420,247]],[5,[1120,125,220,152]],[6,[335,142,170,154]]]:
+		var image: Dictionary=op_from(diary_layout,entry[0]).duplicate(true)
+		image.box=entry[1]
+		operations.append(image)
+	var primary: Dictionary=op_from("UI06_main",27).duplicate(true)
+	primary.box=[1035,748,278,77]
+	operations.append(primary)
+	var divider: Dictionary=op_from("UI08_main",19).duplicate(true)
+	divider.box=[365,315,935,6]
+	operations.append(divider)
+	present_layout({"id":"native_diary","canvas":[1672,941],"operations":operations})
+	native_text("我把今天记下来",Rect2(535,171,690,65),47)
+	native_text("罗瑾的日记 · 第"+str(day)+"日",Rect2(540,246,680,42),26)
+	var body:=prose(text,Rect2(365,350,930,352))
+	body.name="diary_body"
+	body.add_theme_font_size_override("normal_font_size",27)
+	var caption:=center_text("安排今晚",Rect2(1035,748,278,77),28)
+	caption.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
+	caption.add_theme_color_override("font_color",Color("fff1d5"))
+	hit(button_id,Rect2(1035,748,278,77),func():
 		if native_open_night():screen="night","安排今晚")
 func selection_dot(x: float,y: float) -> void:
 	var layer=Layer.new();layer.current={"canvas":current.canvas,"operations":[{"type":"ellipse","box":[x,y,14,14],"color":"#b51f1c","stroke":"none","width":1,"rx":0}]}
@@ -253,8 +313,90 @@ func op_from(layout_id: String,index: int) -> Dictionary:
 	for layout in layouts:
 		if layout.id==layout_id:return layout.operations[index]
 	return {}
+func night_prose(text: String,box: Rect2,font_size: int) -> RichTextLabel:
+	var label:=prose(text,box)
+	label.add_theme_font_size_override("normal_font_size",font_size)
+	return label
+
+func night_display(layout_id: String,index: int,box: Array=[]) -> void:
+	var operation: Dictionary=op_from(layout_id,index).duplicate(true)
+	if not box.is_empty():operation.box=box
+	add_display_op(operation)
+
+func night_primary(caption: String,box: Rect2,font_size: int=28) -> void:
+	night_display("UI06_main",27,[box.position.x,box.position.y,box.size.x,box.size.y])
+	var label:=center_text(caption,box,font_size)
+	label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_color_override("font_color",Color("fff1d5"))
+
 func render_night_plan() -> void:
-	var remove: Array=[13,20,22,37,40,59,61,62,63,64,75,84,134,137,140,141,142,143,144,145,149]
+	var probe=Model.new();probe.state=model.state.duplicate(true);probe.load_expedition_rules()
+	var folded: bool=not probe.js_truthy(probe.state.expedition.get("plan")) and probe.state.expedition.get("active")==null
+	for person in ["母亲","安仁叔叔","外祖父"]:folded=folded and probe.expedition_window(person)=="locked"
+	if not folded:
+		render_night_plan_expanded()
+		return
+	var n: Dictionary=model.state.night
+	var preview: Dictionary=probe.preview_night()
+	present_layout({"id":"native_night_plan_folded","canvas":[1672,941],"operations":room_background_operations(room_projection())})
+	for index in [5,6,7,8,26,150,151,152]:night_display("UI17_main",index)
+	native_text("今晚安排",Rect2(380,110,520,80),56)
+	native_text("用餐与取暖",Rect2(285,240,600,48),35)
+	night_display("UI17_main",10,[288,306,120,116])
+	for i in range(2):
+		var meal: bool=i==0
+		var text: String=("● " if n.meal==meal else "○ ")+("今晚开伙" if meal else "今晚不开伙")
+		native_text(text,Rect2(445,318+i*60,420,44),29)
+		hit("night_meal_on" if meal else "night_meal_off",Rect2(435,310+i*60,440,56),func():native_night_option("meal",meal),text)
+	night_display("UI17_main",17,[288,476,130,122])
+	for fire in range(3):
+		var text: String=("● " if int(n.fire)==fire else "○ ")+["不生火","生火","多烧一份木料"][fire]
+		var label:=native_text(text,Rect2(445,468+fire*58,465,44),28)
+		var button:=hit("night_fire_"+str(fire),Rect2(435,460+fire*58,480,55),func():native_night_option("fire",fire),"火力 "+str(fire))
+		button.disabled=fire==0 and n.meal
+		if button.disabled:label.add_theme_color_override("font_color",Color("9b8b70"))
+	native_text("照料",Rect2(990,240,450,48),35)
+	if model.state.animals.poultry!=null or model.state.animals.pet!=null or bird_note_available() or model.state.night.get("pigeonAction","none")!="none":
+		render_animal_card()
+	else:
+		native_text("动物",Rect2(990,310,420,42),29)
+		night_prose("家中尚无动物。\n遇见时再决定是否留下。",Rect2(990,368,405,95),25)
+	if model.animal_encounter_for_night()!=null:
+		native_text("棚边动物 · 查看",Rect2(1290,446,170,25),16)
+		hit("animal_encounter_open",Rect2(1285,444,180,29),func():screen="animalEncounter","处理动物遇见；不处理直接确认会错过")
+	native_text("处理病症",Rect2(990,504,430,44),29)
+	native_text(("● " if n.treatment=="none" else "○ ")+"今晚不使用药物",Rect2(990,560,430,46),27)
+	hit("night_treatment_none",Rect2(980,552,460,55),func():native_night_treatment("none"),"本夜不用药")
+	var treatments: Array=probe.treatment_options()
+	if treatments.is_empty():night_prose("当前没有可安排的病症用药。\n物品留在家中。",Rect2(990,625,410,90),24)
+	else:
+		var scroll:=ScrollContainer.new();scroll.name="night_treatment_scroll";scroll.position=Vector2(990,615);scroll.size=Vector2(450,100);holder.add_child(scroll)
+		var list:=VBoxContainer.new();list.size_flags_horizontal=Control.SIZE_EXPAND_FILL;scroll.add_child(list)
+		for option in treatments:
+			var button:=Button.new();button.text=("● " if n.treatment==option.value else "○ ")+option.label;button.custom_minimum_size=Vector2(425,46)
+			button.add_theme_font_override("font",fonts[FONT_REG+"#2"]);button.add_theme_font_size_override("font_size",19);button.add_theme_color_override("font_color",Color("372b21"))
+			for style in ["normal","hover","pressed","focus","disabled"]:button.add_theme_stylebox_override(style,StyleBoxEmpty.new())
+			for color in ["font_hover_color","font_pressed_color","font_focus_color"]:button.add_theme_color_override(color,Color("8a3c29"))
+			button.pressed.connect(func():native_night_treatment(option.value);call_deferred("render_screen"));list.add_child(button);controls["night_treatment_"+option.value]=button
+	night_display("UI08_main",19,[285,735,1140,5])
+	if model.state.get("error")==null:native_text("远行准备尚未开放",Rect2(294,754,800,42),24).add_theme_color_override("font_color",Color("8c7654"))
+	else:night_prose("远行准备尚未开放\n"+str(model.state.error),Rect2(294,746,880,62),22)
+	native_text("家用预算",Rect2(255,815,250,45),29)
+	for i in range(3):
+		var key: String=["rice","water","wood"][i];var x: int=280+i*238
+		night_display("UI17_main",[132,135,138][i],[x,861,60,52])
+		native_text(["米粮","饮水","木料"][i]+"  "+str(int(model.state[key]))+" → "+str(int(model.state[key]-preview.cost[key])),Rect2(x+73,869,170,42),27)
+	native_text("物资尚未扣除",Rect2(987,856,230,42),24)
+	night_primary("确认今晚 →",Rect2(1220,841,255,67))
+	var valid: bool=preview.cost.rice<=model.state.rice and preview.cost.wood<=model.state.wood and (not n.meal or n.fire>=1)
+	valid=valid and probe.validate_expedition_plan()
+	hit("night_confirm",Rect2(1220,841,255,67),func():
+		if native_confirm_night():night_stage="reading";night_choice_page=0;screen=model.state.phase,"确认今晚").disabled=not valid
+	hit("night_back",Rect2(1516,64,155,80),func():screen="diary" if model.state.day==0 else "focusDiary","返回日记，不改变安排")
+	render_night_header()
+
+func render_night_plan_expanded() -> void:
+	var remove: Array=[13,20,22,37,40,59,60,61,62,63,64,75,84,134,137,140,141,142,143,144,145,149]
 	for i in range(38,57):remove.append(i)
 	for i in range(73,84):remove.append(i)
 	for i in range(85,130):remove.append(i)
@@ -271,11 +413,12 @@ func render_night_plan() -> void:
 	render_expedition_night_controls()
 	render_animal_card()
 	if model.animal_encounter_for_night()!=null:
-		native_text("棚边有动物停留 · 查看",Rect2(1035,452,410,24),18)
-		hit("animal_encounter_open",Rect2(1030,447,425,30),func():screen="animalEncounter","处理动物遇见；不处理直接确认会错过")
+		native_text("棚边动物 · 查看",Rect2(1290,446,170,25),16)
+		hit("animal_encounter_open",Rect2(1285,444,180,29),func():screen="animalEncounter","处理动物遇见；不处理直接确认会错过")
 	selection_dot(1040,558) if n.treatment=="none" else null
 	hit("night_treatment_none",Rect2(1035,551,430,44),func():native_night_treatment("none"),"本夜不用药")
-	var treatments: Array=model.treatment_options()
+	var treatment_probe=Model.new();treatment_probe.state=model.state.duplicate(true)
+	var treatments: Array=treatment_probe.treatment_options()
 	if treatments.is_empty():prose("当前没有可安排的病症用药。物品留在家中，不会凭空扣除。",Rect2(1035,630,410,100),20)
 	else:
 		var scroll:=ScrollContainer.new();scroll.position=Vector2(1035,605);scroll.size=Vector2(430,176);holder.add_child(scroll)
@@ -290,7 +433,6 @@ func render_night_plan() -> void:
 		var amount: int=int(model.state[row[0]]);var cost: int=int(preview.cost[row[0]])
 		native_text(str(amount)+" → "+str(amount-cost),Rect2(row[1],878,180,37),26)
 	native_text("物资尚未扣除",Rect2(970,844,225,32),21)
-	prose("此处是总计，不重复扣减。",Rect2(970,880,220,36),16)
 	native_text(date_label(),Rect2(42,20,335,75),22)
 	var valid: bool=preview.cost.rice<=model.state.rice and preview.cost.wood<=model.state.wood and (not n.meal or n.fire>=1)
 	var probe=Model.new();probe.state=model.state.duplicate(true);valid=valid and probe.validate_expedition_plan()
@@ -299,17 +441,27 @@ func render_night_plan() -> void:
 	confirm.disabled=not valid
 	hit("night_back",Rect2(1516,64,155,80),func():screen="diary" if model.state.day==0 else "focusDiary","返回日记，不改变安排")
 
+func render_night_header() -> void:
+	# The shared daylight scene needs the same legible paper-backed date header.
+	add_display_op(op_from("UI06_main",5))
+	design_text("UI06_main",9,date_label())
+	design_text("UI06_main",10,model.current_weather().name+" · 夜间")
+
 func render_night_event() -> void:
 	var event=model.state.get("pendingNightEvent")
+	var operations: Array=room_background_operations(room_projection())
+	var choosing: bool=event!=null and night_stage=="choices"
+	var toolbar_layout: String="UI18_mouse_rope_available" if choosing else "UI18_quiet_normal"
+	var toolbar_indices: Array=[5,23,24,25,26,27] if choosing else [5,17,18,19,20,21]
+	for index in toolbar_indices:operations.append(op_from(toolbar_layout,index).duplicate(true))
+	present_layout({"id":"native_night_event","canvas":[1672,941],"operations":operations})
 	if event!=null and night_stage=="choices":
-		var remove: Array=[9,10,14,15,17,18,20,21,22,28,29,30,33,34,35,36,37,38]
-		if event.type=="robbery" and not model.animal_at_home("poultry"):remove.append(19)
-		use_layout("UI18_mouse_rope_available",remove)
-		native_text(date_label(),Rect2(54,30,550,40),24);native_text(model.current_weather().name+" · 夜间",Rect2(54,68,400,28),18)
-		native_text("夜间 · 有限现场",Rect2(775,200,360,35),24)
-		center_text(event.title,Rect2(690,260,560,62),31)
-		native_text("重读现场正文",Rect2(696,320,544,34),20)
-		hit("night_reread",Rect2(696,315,544,40),func():night_stage="reading","重读，不结算")
+		night_display("UI18_mouse_rope_available",6,[525,145,850,720])
+		night_display("UI18_mouse_rope_available",7,[575,180,40,38])
+		render_night_header()
+		native_text("夜间 · 应对",Rect2(635,176,580,42),29)
+		native_text(event.title,Rect2(575,242,740,60),36)
+		native_text("今晚安排已确认 · 当前只处理眼前的事",Rect2(580,304,735,40),23).add_theme_color_override("font_color",Color("78654d"))
 		var choices=[
 			["quiet","先护住人，不追出去","可能失去近手的一份米粮或木料；没有可拿的则不再扣。"],
 			["warn","让叔叔隔着棚边出声","需要叔叔在棚且能够应答；他会费些精神，不追赶来人。"],
@@ -321,45 +473,53 @@ func render_night_event() -> void:
 		elif event.type=="mouse":
 			choices=[["tidy","搬到身边，清理散米","先收拢眼前的粮袋；是否少粮留到天亮清点。"],["move","用绳索吊好粮袋","需要家里可用的绳索；绳索仍会留下。"],["wait","先休息，天亮再看","当场不清点，天亮按实际结果记账。"]]
 		var pages: int=ceili(choices.size()/3.0);night_choice_page=clampi(night_choice_page,0,pages-1)
-		if pages>1:
-			native_text("上一页     "+str(night_choice_page+1)+" / "+str(pages)+"     下一页",Rect2(780,795,430,35),20)
-			hit("night_choices_prev",Rect2(770,790,140,45),func():night_choice_page=maxi(0,night_choice_page-1)).disabled=night_choice_page==0
-			hit("night_choices_next",Rect2(1080,790,140,45),func():night_choice_page=mini(pages-1,night_choice_page+1)).disabled=night_choice_page==pages-1
 		for i in range(mini(3,choices.size()-night_choice_page*3)):
 			var index: int=night_choice_page*3+i
-			var row: Array=choices[index];var y: int=447+i*121
-			var path: String=op_from("UI18_mouse_rope_available",[14,17,20][i]).path if event.type=="mouse" else (skin.items.rice5 if event.type=="robbery" and i==0 else (skin.items.goose if row[0]=="animalPoultry" else (op_from("UI17_main",47).path if row[0] in ["warn","resist"] else (skin.items.whistle if row[0]=="whistle" else skin.items.bedding))))
+			var row: Array=choices[index];var y: int=355+i*150
+			night_display("UI18_mouse_rope_available",13,[565,y,770,142])
+			var path: String=op_from("UI18_mouse_rope_available",[14,17,20][i]).path if event.type=="mouse" else (skin.items.rice5 if row[0]=="give" else (skin.items.goose if row[0]=="animalPoultry" else (op_from("UI17_main",47).path if row[0] in ["warn","resist"] else (skin.items.whistle if row[0]=="whistle" else skin.items.bedding))))
 			if row[0]=="animalPet":path=op_from("UI17_animal_overview",11 if model.state.animals.pet.type=="cat" else 15).path
-			var icon:=image_node(path,Rect2(700,y+12,165,82));icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			var title:=native_text(row[1],Rect2(890,y+17,350,35),24)
-			var hint:=prose(row[2],Rect2(890,y+56,350,45),17)
-			var button:=hit("night_choice_"+row[0],Rect2(682,y,575,108),func():native_night_response(row[0]),row[1])
+			var icon:=image_node(path,Rect2(590,y+20,120,92));icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			var title:=native_text(row[1],Rect2(735,y+14,570,40),28)
+			var hint:=night_prose(row[2],Rect2(735,y+50,570,88),23);hint.scroll_active=false
+			hint.name="night_hint_"+str(row[0])
+			var button:=hit("night_choice_"+row[0],Rect2(565,y,770,142),func():native_night_response(row[0]),row[1])
 			button.disabled=not model.night_choice_requirement(row[0])
 			if button.disabled:icon.modulate.a=0.45;title.modulate.a=0.45;hint.modulate.a=0.45
+		native_text("重读现场正文",Rect2(575,814,210,38),22)
+		hit("night_reread",Rect2(565,808,220,44),func():night_stage="reading","重读，不结算")
+		if pages>1:
+			native_text("上一页",Rect2(810,814,130,38),22).modulate.a=0.4 if night_choice_page==0 else 1.0
+			center_text(str(night_choice_page+1)+" / "+str(pages),Rect2(950,814,110,38),22)
+			native_text("下一页",Rect2(1110,814,130,38),22).modulate.a=0.4 if night_choice_page==pages-1 else 1.0
+			hit("night_choices_prev",Rect2(800,808,140,44),func():night_choice_page=maxi(0,night_choice_page-1)).disabled=night_choice_page==0
+			hit("night_choices_next",Rect2(1100,808,140,44),func():night_choice_page=mini(pages-1,night_choice_page+1)).disabled=night_choice_page==pages-1
+		else:native_text("先处理眼前的事，之后再等天亮。",Rect2(800,814,500,38),23)
 		return
-	var removed: Array=[11,12,15,16,23,24,25,26,27,28,29]
-	if event!=null:removed.append_array([14,30])
-	use_layout("UI18_quiet_normal",removed)
-	native_text(date_label(),Rect2(54,30,550,40),24);native_text(model.current_weather().name+" · 夜间",Rect2(54,68,400,28),18)
+	night_display("UI18_quiet_normal",6,[500,150,850,710])
+	night_display("UI18_mouse_rope_available",7,[560,190,40,38])
+	render_night_header()
 	var record: Dictionary=model.state.nightCycle.get("readingEvent",{})
 	var title: String=event.title if event!=null else record.get("title","棚边暂时安静下来")
-	center_text(title,Rect2(735,279,490,62),34)
-	var status:=native_text(str(model.state.error) if model.state.get("error")!=null else "今晚安排已确认；结算结果仍以清点为准。",Rect2(745,365,465,35),17)
-	status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	native_text("夜间记录",Rect2(620,185,600,45),29)
+	native_text(title,Rect2(565,254,720,65),37)
+	night_prose(str(model.state.error) if model.state.get("error")!=null else "今晚安排已确认；清点仍在原有时点进行。",Rect2(565,325,720,52),22)
 	var body: String=event.text if event!=null else record.get("closure","这一夜还没有过去。")
 	if event==null and record.get("receipt","")!="":body+="\n\n"+record.receipt
-	prose(body,Rect2(745,404,465,270),23)
+	var reading:=night_prose(body,Rect2(565,390,715,300),26);reading.name="night_body"
+	var button_box:=Rect2(910,748,360,70)
 	if event!=null and event.type=="family":
-		center_text("把这一夜接着过下去",Rect2(805,723,345,45),24).add_theme_color_override("font_color",Color("fff2d8"))
-		hit("night_family_continue",Rect2(796,706,356,75),func():native_night_response("continue"),"不新增选择；继续今晚的安排")
+		night_primary("把这一夜接着过下去",button_box,24)
+		hit("night_family_continue",button_box,func():native_night_response("continue"),"不新增选择；继续今晚的安排")
 	elif event!=null:
-		center_text("选择应对",Rect2(820,723,310,45),30).add_theme_color_override("font_color",Color("fff2d8"))
-		hit("night_read_next",Rect2(796,706,356,75),func():night_stage="choices","查看应对选项")
+		night_primary("选择应对",button_box)
+		hit("night_read_next",button_box,func():night_stage="choices","查看应对选项")
 	else:
-		hit("night_finish",Rect2(796,706,356,75),func():
+		night_primary("等到天亮",button_box)
+		hit("night_finish",button_box,func():
 			if native_finish_night():screen=model.state.phase;morning_tab="city","结算这一夜")
 func render_morning() -> void:
-	use_layout("UI07_main",[9,10,19,20,25,29,30,32,33,34,35])
+	use_layout("UI07_main",[9,10,19,20,25,29,30,32,33,34,35,36,37])
 	var city: Dictionary=city_chronicle[clampi(int(model.state.day),0,48)]
 	native_text(date_label(),Rect2(58,48,450,35),24);native_text(model.current_weather().name+" · 清晨",Rect2(58,86,400,30),20)
 	native_text(date_label(),Rect2(642,278,550,40),24);native_text(model.current_weather().name,Rect2(1175,244,90,40),23)
@@ -378,94 +538,37 @@ func render_morning() -> void:
 	else:
 		native_text(str(city.theme),Rect2(606,492,570,42),28);native_text("城里的事",Rect2(605,539,570,35),20)
 		body=str(city.quote) if city.quote!=null else str(city.summary)
-		body+="\n\n资料与史实边界\n"+str(city.source)+"\n"+str(city.note)
-		if city.url!=null:body+="\n"+str(city.url)
 	prose(body,Rect2(504,580,730,190),24)
 	hit("morning_city",Rect2(580,490,650,80),func():morning_tab="city","返回城里的事")
 	var next:=hit("morning_next",Rect2(1361,824,303,69),func():
 		if native_enter_focus():screen=model.state.phase,"查看今天各人的去向")
 	next.disabled=not first_day_focus_available();next.tooltip_text="查看今日去向" if not next.disabled else "开发候选：此条件的后续白天流程尚未接通"
 
-# Native save controls reuse approved UI23; v1 remains readable, v2 requires bounded replay proof.
-func open_saves() -> void:
-	save_return_screen=screen;screen="save";save_preview={};save_notice="";save_text=""
+# Continue keeps native validation and continuation recovery intact.
 func continue_saved() -> void:
+	var no_disk_record: bool = not FileAccess.file_exists(save_path) and not FileAccess.file_exists(save_path + ".bak")
+	if not model.state.is_empty() and (autosave_paused or state_stamp() != autosave_saved or no_disk_record):
+		screen = model.state.phase
+		if no_disk_record and not autosave_paused and state_stamp() == autosave_saved:
+			autosave_paused = true
+			autosave_saved = ""
+			autosave_notice = "磁盘记录已缺失，当前进度仍在内存中。请保留此窗口；关闭窗口时会再次确认。"
+			autosave_return_screen = screen
+			screen = "autoSaveFailure"
+		return
+	# Bind recovery to the primary seen before loading, never a later replacement.
+	var expected_primary: String=save_store.file_fingerprint(save_path)
 	var result: Dictionary=save_store.load_from(save_path,model)
 	if not result.ok:save_notice="读取失败，当前进度未改变："+str(result.reason);return
 	restore_continuation(save_store.decoded_proof);screen=model.state.phase;night_stage="reading";morning_tab="city"
-	autosave_expected_sha=save_store.file_fingerprint(save_path);autosave_seen=state_stamp();autosave_saved=autosave_seen;autosave_paused=result.source=="backup"
-	save_notice="已从备用记录恢复；请在存档管理中确认写回主记录，自动保存暂不覆盖损坏文件。" if autosave_paused else "已读取本机记录。"
+	autosave_expected_sha=expected_primary;autosave_seen=state_stamp();autosave_paused=result.source=="backup" or save_store.file_fingerprint(save_path)!=expected_primary
+	autosave_saved="" if autosave_paused else autosave_seen
+	save_notice="已读取本机记录。"
+	if autosave_paused:
+		save_notice="已从备用记录恢复，自动保存暂停。重试只在主记录与载入时相同且占用结束后恢复。" if result.source=="backup" else "读取期间主记录已变化，自动保存暂停，不会覆盖新记录。"
+		save_notice+="可继续游戏，稍后从菜单重试；也可关闭窗口并按提示退出。"
 	autosave_notice=save_notice if autosave_paused else ""
 	if autosave_paused and autosave_enabled:autosave_return_screen=screen;screen="autoSaveFailure"
-
-func state_summary(value: Dictionary) -> String:
-	if value.is_empty():return "尚未开始游戏"
-	if value.get("ended",false):return "四十九日结束 · 结局" if int(value.day)==49 else "第"+str(int(value.day)+1)+"日 · 生涯中断"
-	var names={"intro":"序章","tutorial":"教程","loadout":"携带物品","event":"逃难途中","report":"抵达记录","diary":"日记","night":"今晚安排","nightEvent":"夜间现场","morning":"清晨","focus":"今日去向","focusEvent":"现场选择","focusResult":"即时结果","focusReturn":"返家清点","search":"寻找安排","expeditionRecall":"返家口述"}
-	return "第"+str(int(value.day)+1)+"日 · "+str(names.get(value.phase,value.phase))
-
-func preview_save_text() -> void:
-	save_preview=save_store.decode(save_text)
-	save_notice="校验失败："+save_store.error if save_preview.is_empty() else "待恢复："+state_summary(save_preview)+"。确认后替换当前进度。"
-func preview_disk_save() -> void:
-	var probe=Model.new();var reader=SaveStore.new();var result: Dictionary=reader.load_from(save_path,probe)
-	if not result.ok:save_preview={};save_notice="读取失败，当前进度未改变："+str(result.reason);return
-	save_text=encode_candidate(probe.state,reader.decoded_proof);preview_save_text()
-	if result.source=="backup":save_notice="主记录不可用，预览备用记录。"+save_notice
-func restore_preview() -> void:
-	var before:=state_stamp();_save_ux_parent_0_restore_preview()
-	if state_stamp()!=before:
-		autosave_seen="";observe_autosave()
-
-func choose_save_file(exporting: bool) -> void:
-	var dialog:=FileDialog.new();dialog.access=FileDialog.ACCESS_FILESYSTEM
-	dialog.file_mode=FileDialog.FILE_MODE_SAVE_FILE if exporting else FileDialog.FILE_MODE_OPEN_FILE
-	dialog.filters=PackedStringArray(["*.json ; 京字原生存档"]);dialog.title="导出原生存档" if exporting else "选择原生存档"
-	if exporting:dialog.current_file="京字原生存档.json"
-	add_child(dialog)
-	dialog.file_selected.connect(func(path: String):
-		if exporting:
-			save_notice="已写入所选文件。" if save_current_to(path) else "导出失败："+save_store.error
-		else:
-			var candidate: Dictionary=save_store.read_valid(path)
-			if candidate.is_empty():save_preview={};save_notice="文件无效："+save_store.error
-			else:save_text=encode_candidate(candidate,save_store.decoded_proof);preview_save_text()
-		dialog.queue_free();render_screen())
-	dialog.canceled.connect(func():dialog.queue_free())
-	dialog.popup_centered_ratio(0.7)
-func render_saves() -> void:
-	use_layout("UI23",[8,13,14,21,24,29,30,31,32,33,36,37,38,39,40,41,42,43])
-	native_text("当前本机记录",Rect2(458,254,500,40),27)
-	native_text(state_summary(model.state),Rect2(469,303,720,32),21)
-	native_text("Godot 本机存档，不是云存档；仅支持当前原生候选。",Rect2(469,335,740,32),20)
-	native_text("保存为独立 JSON 文件，不兼容旧 HTML 存档。",Rect2(543,510,680,30),18)
-	native_text("先校验，再确认；无效记录不改变当前进度。",Rect2(585,794,650,30),17)
-	var notice:=native_text(save_notice,Rect2(689,596,520,42),17);notice.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	save_editor=TextEdit.new();save_editor.position=Vector2(480,648);save_editor.size=Vector2(738,72)
-	save_editor.text=save_text if save_text.length()<=65536 else "";save_editor.placeholder_text=("已载入较大的原生记录，可直接校验/恢复；粘贴新内容会替换它。" if save_text.length()>65536 else "粘贴原生存档文字……");save_editor.wrap_mode=TextEdit.LINE_WRAPPING_BOUNDARY
-	save_editor.add_theme_font_override("font",fonts[FONT_REG+"#2"]);save_editor.add_theme_font_size_override("font_size",20)
-	for style in ["normal","focus","read_only"]:save_editor.add_theme_stylebox_override(style,StyleBoxEmpty.new())
-	save_editor.add_theme_color_override("font_color",Color("372b21"));save_editor.add_theme_color_override("font_placeholder_color",Color("a18b6e"));save_editor.add_theme_color_override("caret_color",Color("8a3c29"));save_editor.add_theme_color_override("selection_color",Color("b89a704d"))
-	var bar:=save_editor.get_v_scroll_bar();bar.custom_minimum_size.x=13
-	for style in ["scroll","grabber","grabber_highlight","grabber_pressed"]:
-		var box:=StyleBoxFlat.new();box.bg_color=Color("f9efd9" if style=="scroll" else ("a59376" if style=="grabber" else "8a7558"));bar.add_theme_stylebox_override(style,box)
-	save_editor.text_changed.connect(func():
-		save_text=save_editor.text;save_preview={}
-		if controls.has("save_restore"):controls.save_restore.disabled=true)
-	holder.add_child(save_editor)
-	var save:=hit("save_write",Rect2(464,370,150,50),func():
-		save_notice="已保存到本机磁盘。" if save_current_to(save_path) else "保存失败："+save_store.error,"保存当前进度")
-	save.disabled=model.state.is_empty()
-	hit("save_read",Rect2(661,370,150,50),func():preview_disk_save(),"读取并预览，不直接覆盖")
-	var export:=hit("save_export",Rect2(472,479,245,53),func():choose_save_file(true),"导出文件")
-	export.disabled=model.state.is_empty()
-	hit("save_file",Rect2(473,592,210,45),func():choose_save_file(false),"选择原生存档文件")
-	hit("save_validate",Rect2(582,737,233,51),func():preview_save_text(),"校验并预览")
-	image_node(op_from("UI23",36 if save_preview.is_empty() else 34).path,Rect2(860,737,229,50))
-	center_text("确认恢复",Rect2(860,745,229,36),21).add_theme_color_override("font_color",Color("f6ead5"))
-	var restore:=hit("save_restore",Rect2(860,737,229,50),func():restore_preview(),"确认覆盖当前进度")
-	restore.disabled=save_preview.is_empty()
-	hit("save_back",Rect2(1148,195,110,45),func():screen=save_return_screen;save_preview={},"返回，不恢复")
 
 func first_day_focus_available() -> bool:
 	return model.state.day>=1 and model.state.day<=48 and model.early_household_supported()
@@ -488,7 +591,7 @@ func render_day_focus() -> void:
 		if native_select_focus(focus_target):screen=model.state.phase,"确认注视选择")
 	hit("focus_back",Rect2(432,768,130,40),func():
 		if native_back_morning():screen="morning","返回晨间记录，不执行选择")
-	hit("focus_menu",Rect2(1512,34,151,56),func():open_saves(),"保存与恢复")
+	hit("focus_menu",Rect2(1512,34,151,56),func():open_system_menu(),"打开菜单，不推进游戏")
 func render_day_focus_event() -> void:
 	var event: Dictionary=native_focus_event()
 	var hidden: Array=[7,14,15,19,20,21,22,23,24,25,26,27,28,30,31,32,33,34,38,39,40,41,42,43,44,45,46]
@@ -497,7 +600,7 @@ func render_day_focus_event() -> void:
 	for i in range(visible,3):hidden.append(35+i)
 	if event.choices.size()>3:hidden.append_array([35,36,37])
 	use_layout("UI09_main",hidden)
-	native_text(date_label()+"   白天事件 · "+("留棚" if model.state.focus.selected=="home" else model.state.focus.selected),Rect2(48,28,1200,40),24)
+	native_text(date_label()+"   白天事件 · "+("留棚" if model.state.focus.selected=="home" else model.state.focus.selected),Rect2(48,28,1200,40),24).add_theme_color_override("font_color",Color("fff1d5"))
 	image_node(skin.items.bedding if model.state.focus.selected=="home" else op_from("UI09_main",14 if model.state.focus.selected=="罗瑾" else 12).path,Rect2(481,223,60,76));native_text(event.title,Rect2(569,228,535,55),36)
 	native_text("完整正文 · 可在纸面内滚动阅读",Rect2(489,303,600,30),17)
 	prose(event.intro,Rect2(489,341,706,220),22)
@@ -511,15 +614,15 @@ func render_day_focus_event() -> void:
 			if native_choose_focus(i):screen=model.state.phase,choice.hint)
 		b.disabled=not native_choice_requirement(choice).met
 	if event.choices.size()>3:
-		native_text("上一页",Rect2(489,819,100,28),17)
+		native_text("上一页",Rect2(489,819,100,28),17).modulate.a=0.4 if focus_choice_page==0 else 1.0
 		var prev:=hit("focus_choices_prev",Rect2(485,817,110,31),func():focus_choice_page-=1,"只翻页，不执行选择");prev.disabled=focus_choice_page==0
 		native_text("第 "+str(focus_choice_page+1)+" / "+str(int(ceil(event.choices.size()/3.0)))+" 页",Rect2(771,819,240,28),17)
-		native_text("下一页",Rect2(1090,819,105,28),17)
+		native_text("下一页",Rect2(1090,819,105,28),17).modulate.a=0.4 if page_start+visible>=event.choices.size() else 1.0
 		var next:=hit("focus_choices_next",Rect2(1085,817,110,31),func():focus_choice_page+=1,"只翻页，不执行选择");next.disabled=page_start+visible>=event.choices.size()
 	else:native_text("选择后核对决定。",Rect2(771,819,300,28),17)
 	hit("focus_event_back",Rect2(1132,237,110,40),func():
 		if native_back_focus():screen="focus","返回今日去向，未结算")
-	hit("focus_event_menu",Rect2(1512,34,151,56),func():open_saves(),"保存与恢复")
+	hit("focus_event_menu",Rect2(1512,34,151,56),func():open_system_menu(),"打开菜单，不推进游戏")
 func render_day_focus_result() -> void:
 	use_layout("UI10_main",[9,10,19,20,21,22,23,24,25,26,28,29,30,31,32,35])
 	native_text(date_label(),Rect2(58,40,600,40),24);native_text("白天 · "+("留棚" if model.state.focus.selected=="home" else model.state.focus.selected),Rect2(58,78,400,30),20)
@@ -529,7 +632,7 @@ func render_day_focus_result() -> void:
 	design_text("UI10_main",35,"等到傍晚")
 	hit("focus_result_next",Rect2(989,676,228,67),func():
 		if native_return_focus():screen=model.state.phase,"等到傍晚，核对家庭记录")
-	hit("focus_result_menu",Rect2(1512,34,151,56),func():open_saves(),"保存与恢复")
+	hit("focus_result_menu",Rect2(1512,34,151,56),func():open_system_menu(),"打开菜单，不推进游戏")
 func render_day_focus_return() -> void:
 	use_layout("UI11_main",[16,17,20,21,22,23,24,25])
 	prose(model.state.focus.returnText if model.state.focus.returnText!="" else "今天家人都在棚里。没有额外带回的物资，家里的吃用仍以实际库存为准。",Rect2(566,329,540,74),21)
@@ -537,11 +640,7 @@ func render_day_focus_return() -> void:
 	native_text(model.state.focus.returnChange if model.state.focus.returnChange!="" else "清点库存，不重复执行白天选择。",Rect2(638,585,490,42),20)
 	hit("focus_return_diary",Rect2(1362,825,305,69),func():screen="focusDiary","读罗瑾的日记")
 func render_day_focus_diary() -> void:
-	use_layout("SVG_jing_ui12_reconstruction_20261024_UI12_reconstruction_v04",[13,15,16,17])
-	native_text("罗瑾的日记 · 第"+str(int(model.state.day)+1)+"日",Rect2(578,310,420,40),24)
-	prose(native_focus_diary(),Rect2(458,410,780,200),22)
-	hit("day_open_night",Rect2(1013,638,266,85),func():
-		if native_open_night():screen="night","安排今晚")
+	render_diary_page(native_focus_diary(),int(model.state.day)+1,"day_open_night")
 
 func _process(_delta: float) -> void:
 	for binding in primary_bindings:refresh_primary_appearance(binding)
@@ -587,53 +686,6 @@ func render_terminal_failure() -> void:
 	design_text(layout_id,10,"此前照片记录："+("已解锁" if photo.get("unlocked",false) else "尚未解锁"))
 	design_text(layout_id,11,"加印 "+str(int(photo.get("prints",0)))+" · 精选 "+str(int(model._object(photo.get("album")).get("selected",0)))+" · 转移 "+str(int(photo.get("transferCount",0))))
 	hit("failure_restart",Rect2(692,760,307,67),func():screen="menu","返回主菜单，选择开始新记录；磁盘存档不变")
-
-func load_reading_preferences() -> void:
-	var config:=ConfigFile.new()
-	if config.load(settings_path)!=OK:return
-	var font=config.get_value("reading","font",19);var focused=config.get_value("reading","focused",false)
-	if typeof(font)==TYPE_INT and font in [18,19,22,25,29]:reading_font_size=font
-	if focused is bool:focused_reading=focused
-func save_reading_preferences() -> bool:
-	var config:=ConfigFile.new();config.set_value("reading","font",reading_font_size);config.set_value("reading","focused",focused_reading)
-	var error: int=config.save(settings_path)
-	reading_preferences_error="" if error==OK else "阅读设置未能保存到磁盘，当前显示仍可使用。"
-	return error==OK
-func open_reading_settings() -> void:
-	if screen!="settings":settings_return_screen=screen
-	settings_focus_control="reading_font_18";screen="settings"
-func render_reading_settings() -> void:
-	var id: String="UI22_selected_"+str(reading_font_size)+"_toggle_on"
-	var hidden: Array=[]
-	for index in range(17,77):hidden.append(index)
-	if not focused_reading:hidden.append(95)
-	use_layout(id,hidden)
-	settings_focus_layer=Layer.new();settings_focus_layer.current={"canvas":current.canvas,"operations":[]};settings_focus_layer.fonts=fonts;settings_focus_layer.textures=textures;settings_focus_layer.size=Vector2(current.canvas[0],current.canvas[1]);settings_focus_layer.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	holder.add_child(settings_focus_layer)
-	var choices: Array=[[18,482,103],[19,610,106],[22,745,137],[25,916,110],[29,1047,143]]
-	for entry in choices:
-		var value: int=entry[0];var control_id: String="reading_font_"+str(value);var box:=Rect2(entry[1],410,entry[2],44)
-		var button:=hit(control_id,box,func():reading_font_size=value;settings_focus_control=control_id;save_reading_preferences(),"选择"+str(value)+"字号，仅改变阅读显示")
-		button.add_theme_stylebox_override("focus",StyleBoxEmpty.new())
-		button.focus_entered.connect(func():show_reading_focus(box))
-		button.focus_exited.connect(func():clear_reading_focus())
-	var toggle:=hit("reading_focus_toggle",Rect2(571,606,420,44),func():focused_reading=not focused_reading;settings_focus_control="reading_focus_toggle";save_reading_preferences(),"仅减弱阅读区域外的背景，不推进游戏")
-	hit("reading_back",Rect2(1063,650,127,46),func():screen=settings_return_screen,"返回，不推进游戏")
-	if reading_preferences_error!="":native_text(reading_preferences_error,Rect2(487,713,675,26),16)
-	call_deferred("restore_reading_focus")
-func restore_reading_focus() -> void:
-	if screen=="settings" and controls.has(settings_focus_control):controls[settings_focus_control].grab_focus()
-func clear_reading_focus() -> void:
-	if is_instance_valid(settings_focus_layer):settings_focus_layer.current.operations=[];settings_focus_layer.queue_redraw()
-func show_reading_focus(box: Rect2) -> void:
-	if not is_instance_valid(settings_focus_layer):return
-	var operations: Array=[]
-	for index in range(17,77):
-		var operation: Dictionary=op_from("UI22",index).duplicate(true);var points: Array=operation.points
-		for i in [0,2]:points[i]=box.position.x+(points[i]-482)*box.size.x/103.0
-		for i in [1,3]:points[i]=box.position.y+(points[i]-410)*box.size.y/43.0
-		operations.append(operation)
-	settings_focus_layer.current.operations=operations;settings_focus_layer.queue_redraw()
 
 func later_action(op: String,args: Array=[]) -> bool:
 	if continuation.anchor.is_empty() and not continuation.start(model):save_notice="当前后续进度缺少可核验的起点，未执行操作。";return false
@@ -689,22 +741,13 @@ func restore_continuation(proof: Dictionary) -> void:
 	continuation=Continuation.new()
 	if not proof.is_empty():continuation.restore(proof)
 	save_store.active_proof=proof.duplicate(true)
-func save_current_to(path: String) -> bool:
-	var ok: bool=_save_ux_parent_0_save_current_to(path)
-	if path==save_path and (ok or save_store.last_write_committed):adopt_primary_if_current()
-	return ok
-
-func encode_candidate(candidate: Dictionary,proof: Dictionary) -> String:
-	var writer=SaveStore.new();writer.active_proof=proof.duplicate(true)
-	return writer.encode(candidate)
-
 func render_animal_card() -> void:
 	_pigeon_ui_parent_0_render_animal_card()
 	var note: bool=bird_note_available();var bird=model.state.animals.get("poultry");var stale: bool=model.state.night.get("pigeonAction","none")!="none"
 	if note and controls.has("animal_tab_poultry"):controls.animal_tab_poultry.disabled=false
 	if note or stale or (bird is Dictionary and bird.get("type")=="pigeon"):
-		native_text("信鸽求助 / 取物安排",Rect2(1050,520,390,38),21)
-		hit("pigeon_open",Rect2(1040,516,410,45),func():screen="pigeonPlan","查看原夜间条件；预选不扣物资")
+		native_text("信鸽求助 / 取物安排",Rect2(1035,446,245,25),18)
+		hit("pigeon_open",Rect2(1030,444,250,29),func():screen="pigeonPlan","查看原夜间条件；预选不扣物资")
 
 func render_animal_encounter() -> void:
 	render_night_plan()
@@ -726,8 +769,10 @@ func render_animal_encounter() -> void:
 	prose("已有宠物，不能同时留下。" if occupied else "需要另外按期备粮。",Rect2(offset.x+430,offset.y+287,310,50),18)
 	hit("animal_accept",Rect2(offset.x+434,offset.y+153,304,55),func():later_action("animal_encounter",["accept",encounter.kind]);screen="night","把它留下").disabled=occupied
 	hit("animal_decline",Rect2(offset.x+434,offset.y+221,304,55),func():later_action("animal_encounter",["decline",encounter.kind]);screen="night","不留下")
-	native_text("返回安排（暂不决定）",Rect2(offset.x+120,offset.y+390,440,38),22).add_theme_color_override("font_color",Color.WHITE)
-	hit("animal_back",Rect2(offset.x+100,offset.y+385,480,48),func():screen="night","返回，不改变动物状态")
+	# Keep the cancel action inside the paper, below the animal illustration.
+	image_node(op_from("UI25_daytime",15).path,Rect2(offset.x+54,offset.y+329,334,42))
+	center_text("返回安排（暂不决定）",Rect2(offset.x+61,offset.y+331,320,38),22)
+	hit("animal_back",Rect2(offset.x+54,offset.y+329,334,42),func():screen="night","返回，不改变动物状态")
 
 # Approved UI16/UI20 component layouts, not full-page screenshot backgrounds.
 var records_return_screen: String="end"
@@ -747,7 +792,7 @@ func ending_scroll_button(id: String,box: Rect2,callback: Callable) -> void:
 	for style in ["normal","hover","pressed","disabled"]:b.add_theme_stylebox_override(style,StyleBoxEmpty.new())
 	b.tooltip_text="滚动后记，不推进游戏";b.pressed.connect(callback);holder.add_child(b);controls[id]=b
 func sync_ending_thumb(bar: VScrollBar,thumb: TextureRect) -> void:
-	var span: float=maxf(0,bar.max_value-bar.page);thumb.size.y=clampf(180*bar.page/maxf(1,bar.max_value),18,81);thumb.position.y=350+(180-thumb.size.y)*(bar.value/span if span>0 else 0);thumb.visible=span>0
+	var span: float=maxf(0,bar.max_value-bar.page);thumb.size.y=clampf(148*bar.page/maxf(1,bar.max_value),18,81);thumb.position.y=398+(148-thumb.size.y)*(bar.value/span if span>0 else 0);thumb.visible=span>0
 func restore_ending_scroll(body_ref,thumb_ref) -> void:
 	await get_tree().process_frame
 	var body=body_ref.get_ref();var thumb=thumb_ref.get_ref()
@@ -809,7 +854,11 @@ func render_photo_records() -> void:
 		design_text(id,61,"系统期限与逐人获知分开核对。")
 		hit("records_back",Rect2(1195,790,127,58),func():screen=records_return_screen,"回到原页面")
 	else:
-		use_layout(id,[32,36,41,42,46,47,51,52,56,57,61,65,102,103,106]);var r: Dictionary=data.route
+		var r: Dictionary=data.route;var receipt: Dictionary=r.receipt;var executed: bool=data.route_valid and receipt.status in ["arrived","retreated"]
+		var hidden: Array=[32,36,41,42,46,47,51,52,56,57,61,65,102,103,106]
+		if not executed:
+			for index in range(68,102):hidden.append(index)
+		use_layout(id,hidden)
 		design_text(id,32,"旧记录未注明逐人接收情况。" if r.legacy else "路线提醒按实际接收者分别记录。")
 		design_text(id,36,"逐人接收记录：")
 		for row in [["player",41,42],["罗瑾",46,47],["母亲",51,52],["外祖父",56,57],["安仁叔叔",61,-1]]:
@@ -819,7 +868,6 @@ func render_photo_records() -> void:
 			elif r.legacy:label="旧记录未注明本人。";why="不将聚合提醒补写成逐人接收。"
 			design_text(id,row[1],label)
 			if row[2]>=0:design_text(id,row[2],why)
-		var receipt: Dictionary=r.receipt;var executed: bool=data.route_valid and receipt.status in ["arrived","retreated"]
 		if executed:
 			design_text(id,65,"第"+str(int(receipt.day))+"日 · "+("已经到位" if receipt.status=="arrived" else "退回原处"));var amount:=native_text(str(int(receipt.amount))+" 张",Rect2(1108,623,164,61),42);amount.add_theme_color_override("font_color",Color("8c211a"))
 			design_text(id,102,"位置："+receipt.location if receipt.status=="arrived" else "本次没有新增转移。")
@@ -837,13 +885,6 @@ func _aux_parent_0__unhandled_key_input(event: InputEvent) -> void:
 		else:open_photo_records()
 		render_screen();get_viewport().set_input_as_handled()
 		return
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_F5:
-		if screen!="save":open_saves();render_screen()
-		get_viewport().set_input_as_handled()
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_F6:
-		if screen=="settings":screen=settings_return_screen
-		else:open_reading_settings()
-		render_screen();get_viewport().set_input_as_handled()
 
 func _aux_parent_0_begin_game(seed: String="") -> void:
 	model.new_game(seed if not seed.is_empty() else str(int(Time.get_unix_time_from_system()*1000)))
@@ -853,28 +894,37 @@ func _aux_parent_0_begin_game(seed: String="") -> void:
 func _aux_parent_0_render_menu() -> void:
 	present_layout({"canvas":[1920,1080],"operations":[]})
 	for key in ["m0","title"]:image_node(menu_contract.assets[key].path,Rect2(0,0,1920,1080))
-	var titles=["开始游戏","继续游戏","存档管理","设置","玩法说明","反馈"]
+	if menu_contract.assets.has("notice_repair"):
+		var repair: Dictionary = menu_contract.assets.notice_repair
+		var region := Rect2(repair.region[0], repair.region[1], repair.region[2], repair.region[3])
+		var cover_scale := Vector2(menu_contract.canvas[0], menu_contract.canvas[1]) / Vector2(repair.size[0], repair.size[1])
+		var repair_node = image_node(repair.path, Rect2(region.position * cover_scale, region.size * cover_scale))
+		var repair_texture := AtlasTexture.new()
+		repair_texture.atlas = repair_node.texture
+		repair_texture.region = region
+		repair_texture.filter_clip = true
+		repair_node.texture = repair_texture
+		repair_node.name = "menu_cover_notice_repair"
+	var titles=["开始游戏","继续游戏","玩法说明"]
+	var ids: Array=["menu_0","menu_1","menu_4"]
 	for i in range(titles.size()):
-		var b:=hit("menu_"+str(i),Rect2(272,274+i*82,298,73),func():
+		var b:=hit(ids[i],Rect2(272,274+i*100,298,73),func():
 			if i==0:begin_game()
 			elif i==1:continue_saved()
-			elif i==2:open_saves()
-			elif i==3:open_reading_settings(),titles[i])
+			else:open_native_help(),titles[i])
 		b.text=titles[i];b.add_theme_font_override("font",fonts[FONT_REG+"#2"]);b.add_theme_font_size_override("font_size",30)
 		b.add_theme_color_override("font_color",Color("dfc9a0"))
 		var bg:=StyleBoxFlat.new();bg.bg_color=Color("211c17dd");bg.border_color=Color("9b805381");bg.set_border_width_all(1);bg.border_width_left=3;bg.set_corner_radius_all(2)
 		b.add_theme_stylebox_override("normal",bg)
 		var hover:=bg.duplicate();hover.bg_color=Color("d1bb90");b.add_theme_stylebox_override("hover",hover);b.add_theme_color_override("font_hover_color",Color("292118"))
-		# Do not wire unimplemented routes to fake dialogs or start a new game.
-		if i==1:b.disabled=not FileAccess.file_exists(save_path) and not FileAccess.file_exists(save_path+".bak")
-		elif i>3:b.disabled=true;b.tooltip_text="开发候选：此入口尚未接入"
-	native_text(save_notice if not save_notice.is_empty() else "原生迁移开发候选 · F5 保存与恢复 · F6 阅读设置 · 未完成入口暂不可用",Rect2(45,1020,1500,40),16)
+		if i==1:b.disabled=model.state.is_empty() and not FileAccess.file_exists(save_path) and not FileAccess.file_exists(save_path+".bak")
+	if not save_notice.is_empty():
+		var notice:=native_text(save_notice,Rect2(45,982,1500,70),16);notice.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 
 func _aux_parent_0_render_screen() -> void:
 	controls.clear();primary_bindings.clear();transition_pending=false
 	match screen:
 		"menu":render_menu()
-		"save":render_saves()
 		"focus":render_day_focus()
 		"focusEvent":render_day_focus_event()
 		"focusResult":render_day_focus_result()
@@ -892,7 +942,6 @@ func _aux_parent_0_render_screen() -> void:
 		"morning":render_morning()
 		"end":render_native_ending()
 		"photoRecords":render_photo_records()
-		"settings":render_reading_settings()
 		_:render_unconnected()
 
 var system_return_screen: String=""
@@ -900,7 +949,7 @@ var system_return_screen: String=""
 var live_return_screen: String=""
 
 func bind_system_toolbar() -> void:
-	if screen in ["menu","settings","save","animalEncounter","photoRecords","end","help","feedback","disk","diskConfirm"]:return
+	if screen in ["menu","animalEncounter","photoRecords","end","help"]:return
 	for op in current.get("operations",[]):
 		if op.get("type")!="text":continue
 		if op.get("text") in ["菜单","菜单 ☰"]:hit("toolbar_system_menu",toolbar_box(op),func():open_system_menu(),"打开系统菜单，不推进游戏")
@@ -912,7 +961,7 @@ func open_system_menu() -> void:
 	screen="systemMenu"
 
 func render_system_menu() -> void:
-	_aux_parent_3_render_system_menu();reconnect_button("system_feedback",func():open_native_feedback());controls.system_feedback.tooltip_text="填写与导出本机反馈；未连接在线提交"
+	_aux_parent_1_render_system_menu()
 
 func render_main_menu_confirmation() -> void:
 	var id: String="UI25_daytime";use_layout(id,[2,4,9,10,11,14,17])
@@ -964,21 +1013,29 @@ func _aux_parent_1_render_screen() -> void:
 
 
 func _aux_parent_1_render_system_menu() -> void:
-	var hidden: Array=[5,6,8,10,12]
+	var hidden: Array=[5,6,8,10,12,13,14,15,16,17]
+	for index in range(18,34):hidden.append(index)
 	for row in [["母亲",1],["罗瑾",2],["安仁叔叔",3],["外祖父",4]]:
 		if not model.present(row[0]):hidden.append(row[1])
 	use_layout("UI29_normal",hidden)
 	design_text("UI29_normal",5,date_label());design_text("UI29_normal",6,model.current_weather().name+" · 菜单")
 	design_text("UI29_normal",8,public_rice_hud());design_text("UI29_normal",10,str(int(model.state.water))+" / "+str(int(model.state.waterCap))+" 饮水");design_text("UI29_normal",12,str(int(model.state.wood))+" 木料")
+	# Reuse UI29's paper, brush icons and labels as three compact rows.
+	image_node(op_from("UI29_normal",13).path,Rect2(1207,105,421,510 if autosave_paused else 432))
+	# The old flower crop contains baked menu text; omit it after compacting rows.
+	for index in [15,16,17]:add_display_op(op_from("UI29_normal",index))
+	for row in [[18,19,203,250],[27,28,303,350],[31,32,403,450]]:
+		var icon: Dictionary=op_from("UI29_normal",row[0]).duplicate(true);icon.box[1]=row[2];add_display_op(icon)
+		var label: Dictionary=op_from("UI29_normal",row[1]).duplicate(true);label.xy[1]=row[3];add_display_op(label)
+	var note: Dictionary=op_from("UI29_normal",33).duplicate(true);note.xy[1]=586 if autosave_paused else 493;add_display_op(note)
 	hit("system_close",Rect2(1558,131,48,46),func():screen=system_return_screen,"收起菜单，返回原阶段")
 	hit("system_resume",Rect2(1257,193,329,83),func():screen=system_return_screen,"继续原页面，不重新读取磁盘")
-	hit("system_save",Rect2(1257,282,329,83),func():open_saves(),"打开原生保存与恢复")
-	hit("system_reading",Rect2(1257,460,329,83),func():open_reading_settings(),"阅读设置，只改显示")
-	hit("system_main_menu",Rect2(1257,727,329,93),func():screen="confirmMainMenu","返回主菜单前确认")
-	# Separate approved screens are the next batch, not silently aliased to another page.
-	for row in [["disk",371],["help",549],["feedback",638]]:
-		var button:=hit("system_"+row[0],Rect2(1257,row[1],329,83),func():pass,"开发候选：此独立页面尚未接线")
-		button.disabled=true
+	hit("system_help",Rect2(1257,293,329,83),func():open_native_help(),"阅读玩法说明，不推进游戏")
+	hit("system_main_menu",Rect2(1257,393,329,93),func():screen="confirmMainMenu","返回主菜单前确认")
+	if autosave_paused:
+		var retry_label:=native_text("保存未完成 · 查看并重试",Rect2(1262,504,310,40),21)
+		retry_label.add_theme_color_override("font_color",Color("8a3c29"))
+		hit("system_save_retry",Rect2(1257,493,329,63),func():autosave_return_screen=system_return_screen;screen="autoSaveFailure","查看保存问题；不自动覆盖记录")
 
 
 var help_page:=0
@@ -1004,6 +1061,8 @@ func render_native_help() -> void:
 
 func add_help_scroll(body: RichTextLabel) -> void:
 	var bar:=body.get_v_scroll_bar();bar.hide()
+	for index in [35,37,38]:
+		add_display_op(op_from("UI21",index));holder.get_child(holder.get_child_count()-1).name="help_arrow_"+str(index)
 	var thumb:=ColorRect.new();thumb.name="help_scroll_thumb";thumb.color=Color("a59376");thumb.position=Vector2(1373.5,224);thumb.size=Vector2(9,157);thumb.mouse_filter=Control.MOUSE_FILTER_IGNORE;holder.add_child(thumb)
 	var track:=Control.new();track.position=Vector2(1368,224);track.size=Vector2(20,484);track.mouse_filter=Control.MOUSE_FILTER_STOP;holder.add_child(track)
 	track.gui_input.connect(func(event):
@@ -1026,6 +1085,9 @@ func initialize_help_scroll(body_ref,thumb_ref) -> void:
 	var body=body_ref.get_ref();var thumb=thumb_ref.get_ref()
 	if not is_instance_valid(body) or not is_instance_valid(thumb):return
 	var bar: VScrollBar=body.get_v_scroll_bar();bar.hide();sync_help_scroll(bar,thumb)
+	var overflow: bool=bar.max_value-bar.page>1
+	for index in [35,37,38]:holder.get_node("help_arrow_"+str(index)).visible=overflow
+	controls.help_scroll_up.visible=overflow;controls.help_scroll_down.visible=overflow
 
 func _aux_parent_2__unhandled_key_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_ESCAPE and screen=="help":screen=help_return_screen;render_screen();get_viewport().set_input_as_handled();return
@@ -1036,271 +1098,6 @@ func _aux_parent_2_render_screen() -> void:
 	if screen=="help":
 		controls.clear();primary_bindings.clear();transition_pending=false;render_native_help()
 	else:_aux_parent_1_render_screen()
-
-
-func _aux_parent_2_render_system_menu() -> void:
-	_aux_parent_1_render_system_menu();reconnect_button("system_help",func():open_native_help())
-	controls.system_help.tooltip_text="阅读十一条说明，不推进游戏"
-
-
-var disk_return_screen: String="systemMenu"
-
-var disk_info: Dictionary={}
-
-var disk_notice: String=""
-
-var disk_action: String=""
-
-var disk_pending_state: PackedByteArray
-
-var disk_pending_proof: PackedByteArray
-
-var disk_pending_fingerprint: String=""
-
-var disk_pending_read_path: String=""
-
-var disk_pending_text: String=""
-
-func open_native_disk() -> void:
-	disk_return_screen=screen;screen="disk";disk_notice="";inspect_native_disk()
-
-func inspect_native_disk() -> void:
-	var reader=SaveStore.new();var probe=Model.new();var result: Dictionary=reader.load_from(save_path,probe)
-	if not result.ok:disk_info={"ok":false,"reason":result.get("reason","UNKNOWN")};return
-	var path: String=save_path+(".bak" if result.source=="backup" else "")
-	var envelope=JSON.parse_string(FileAccess.get_file_as_string(path))
-	disk_info={"ok":true,"source":result.source,"state":probe.state.duplicate(true),"proof":reader.decoded_proof.duplicate(true),"path":path,"fingerprint":reader.file_fingerprint(path),"revision":envelope.get("revision",0)}
-
-func render_native_disk() -> void:
-	var hidden: Array=[7,8,12,13,14,15,17,33,34]
-	if not disk_info.get("ok",false):hidden.append(16)
-	use_layout("UI24",hidden)
-	design_text("UI24",7,"已读回并校验本机文件。" if disk_info.get("ok",false) else "尚无可用的本机记录。")
-	design_text("UI24",8,"使用已验证的备用文件；主文件不可用。" if disk_info.get("source")=="backup" else "查看与预览均不会自动写盘。")
-	design_text("UI24",12,"存档格式");design_text("UI24",13,state_summary(model.state));design_text("UI24",14,state_summary(disk_info.state) if disk_info.get("ok",false) else "没有可恢复记录")
-	design_text("UI24",15,"V"+str(int(disk_info.revision)) if disk_info.get("ok",false) else "未校验")
-	design_text("UI24",17,disk_notice if not disk_notice.is_empty() else ("文件校验："+str(disk_info.fingerprint).substr(0,12) if disk_info.get("ok",false) else "可先预览写入；无效记录不会覆盖当前进度。"))
-	design_text("UI24",33,"本机用户数据目录");design_text("UI24",34,"主文件与 .bak 备用文件分开核对。")
-	hit("disk_inspect",Rect2(416,554,257,91),func():disk_notice="";inspect_native_disk(),"只读核对文件，不加载到当前游戏")
-	var write:=hit("disk_preview_write",Rect2(687,554,287,91),func():prepare_disk_action("write"),"预览当前进度；确认前不写入");write.disabled=model.state.is_empty()
-	var restore:=hit("disk_preview_restore",Rect2(991,554,270,91),func():prepare_disk_action("restore"),"预览磁盘进度；确认前不替换");restore.disabled=not disk_info.get("ok",false)
-	hit("disk_back",Rect2(1162,715,111,52),func():screen=disk_return_screen,"返回原菜单")
-
-func prepare_disk_action(action: String) -> void:
-	disk_action=action;disk_pending_state=var_to_bytes(model.state);disk_pending_proof=var_to_bytes(continuation.proof());disk_pending_text=""
-	var reader=SaveStore.new()
-	if action=="write":
-		if model.state.is_empty():return
-		var proof: Dictionary=continuation.proof() if not continuation.actions.is_empty() else {}
-		disk_pending_text=encode_candidate(model.state,proof)
-		if disk_pending_text.is_empty():disk_notice="当前进度尚未通过保存校验。";return
-		disk_pending_read_path=save_path;disk_pending_fingerprint=reader.file_fingerprint(save_path)
-	else:
-		inspect_native_disk()
-		if not disk_info.get("ok",false):disk_notice="没有可恢复的已校验文件。";return
-		disk_pending_read_path=disk_info.path;disk_pending_fingerprint=disk_info.fingerprint;disk_pending_text=FileAccess.get_file_as_string(disk_pending_read_path)
-	screen="diskConfirm"
-
-func render_disk_confirmation() -> void:
-	var id: String="UI25_daytime";use_layout(id,[2,4,9,10,11,14,17])
-	design_text(id,2,"确认写入本机文件" if disk_action=="write" else "确认恢复磁盘记录")
-	design_text(id,4,state_summary(model.state) if disk_action=="write" else state_summary(disk_info.get("state",{})))
-	design_text(id,9,"写入前再核对当前进度与文件。" if disk_action=="write" else "恢复会替换当前进度，不会合并。")
-	design_text(id,10,"旧的有效主文件会保留为备用。" if disk_action=="write" else "替换前先备份当前未保存进度。")
-	design_text(id,11,"取消不写盘，也不改变当前游戏。");design_text(id,14,"确认写入" if disk_action=="write" else "确认恢复");design_text(id,17,"取消，返回预览")
-	hit("disk_confirm",Rect2(594,677,490,60),func():commit_disk_action(),"确认这一次预览")
-	hit("disk_cancel",Rect2(604,747,470,60),func():screen="disk";disk_action="", "取消，不写入或恢复")
-
-func commit_disk_action() -> void:
-	_save_ux_parent_0_commit_disk_action();adopt_primary_if_current()
-
-func _aux_parent_3__unhandled_key_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_ESCAPE and screen in ["disk","diskConfirm"]:
-		screen=disk_return_screen if screen=="disk" else "disk";disk_action="";render_screen();get_viewport().set_input_as_handled();return
-	_aux_parent_2__unhandled_key_input(event)
-
-
-func _aux_parent_3_render_menu() -> void:
-	_aux_parent_1_render_menu();reconnect_button("menu_4",func():open_native_help())
-
-
-func _aux_parent_3_render_screen() -> void:
-	if screen in ["disk","diskConfirm"]:
-		controls.clear();primary_bindings.clear();transition_pending=false
-		if screen=="disk":render_native_disk()
-		else:render_disk_confirmation()
-	else:_aux_parent_2_render_screen()
-
-
-func _aux_parent_3_render_system_menu() -> void:
-	_aux_parent_2_render_system_menu();reconnect_button("system_disk",func():open_native_disk());controls.system_disk.tooltip_text="本机磁盘：先预览，再确认写入或恢复"
-
-
-const FEEDBACK_ISSUES=["不知道下一步","文本重复／矛盾","文本太少","角色不够鲜明","选择没有意义","生存太难","生存太容易","道具用途不清","按钮／界面问题","存档问题"]
-
-var feedback_return_screen: String="menu"
-
-var feedback_view: String="upper"
-
-var feedback_draft_path: String="user://jing-native-feedback-draft.json"
-
-var feedback_draft: Dictionary={}
-
-var feedback_notice: String=""
-
-var feedback_popup: Dictionary={}
-
-var feedback_editor: TextEdit
-
-var feedback_show_context:=false
-
-func feedback_options(key: String) -> Array:
-	var values: Array=[]
-	match key:
-		"category":values=["试玩感受","看不懂／不会操作","剧情与文本问题","程序错误／卡住","其他建议"]
-		"module":values=["主线与历史氛围","罗瑾／照相馆","母亲","外祖父","安仁叔叔","棚区邻里","动物","远行与寻找","夜间威胁","生存与疾病","教程／UI／存档","结局"]
-		"duration":values=["10分钟内","10—30分钟","30—60分钟","超过1小时"]
-		"overall","clarity":return [["","暂不评价／未体验"],["1","1 · 很差／很不清楚"],["2","2 · 较差"],["3","3 · 一般"],["4","4 · 较好"],["5","5 · 很好／很清楚"]]
-		"pace":return [["","暂不评价／未体验"],["太简略","太简略，想读更多"],["合适","基本合适"],["拖沓","偏长或拖沓"]]
-		"continuePlay":return [["","暂不评价／未体验"],["想","想继续"],["不确定","不确定"],["暂时不想","暂时不想"]]
-	var result: Array=[] if key=="category" else [["","暂不评价／未体验"]]
-	for value in values:result.append([value,value])
-	return result
-
-func feedback_context() -> Dictionary:
-	if model.state.is_empty():return {"version":"native-C9-ui-candidate","phase":"menu","day":null,"event":"","seed":""}
-	var s: Dictionary=model.state;var f: Dictionary=model._object(s.get("focus"));var event: Dictionary=model._object(f.get("laterEvents")).get(f.get("eventId",""),{});var title: String=event.get("title","") if f.get("day")==s.day else ""
-	if s.phase=="nightEvent":title=model._object(s.get("pendingNightEvent")).get("title","夜间事件")
-	return {"version":"native-C9-ui-candidate","day":mini(49,int(s.day)+1),"phase":s.phase,"event":title,"seed":s.seed}
-
-func ensure_feedback_draft() -> void:
-	if not feedback_draft.is_empty():return
-	feedback_draft={"id":"","category":"试玩感受","module":"","overall":"","clarity":"","pace":"","continuePlay":"","duration":"","issues":[],"comment":"","includeContext":true,"consent":false,"context":null}
-	if not FileAccess.file_exists(feedback_draft_path):return
-	var text: String=FileAccess.get_file_as_string(feedback_draft_path)
-	if text.length()>65536:return
-	var stored=JSON.parse_string(text)
-	if not stored is Dictionary:return
-	for key in ["category","module","overall","clarity","pace","continuePlay","duration"]:
-		if stored.get(key) is String and feedback_options(key).any(func(row):return row[0]==stored[key]):feedback_draft[key]=stored[key]
-	if stored.get("comment") is String:feedback_draft.comment=stored.comment.substr(0,2000)
-	for key in ["includeContext","consent"]:
-		if stored.get(key) is bool:feedback_draft[key]=stored[key]
-	if stored.get("issues") is Array:
-		for issue in stored.issues:
-			if issue is String and issue in FEEDBACK_ISSUES and issue not in feedback_draft.issues:feedback_draft.issues.append(issue)
-	# Retain the original report location, but export only the declared small context.
-	if stored.get("context") is Dictionary:
-		var c: Dictionary=stored.context;var valid: bool=c.get("day")==null or (typeof(c.get("day")) in [TYPE_INT,TYPE_FLOAT] and c.day>=0 and c.day<=49)
-		for key in ["version","phase","event","seed"]:valid=valid and c.get(key) is String
-		if valid:feedback_draft.context={"version":c.version.substr(0,80),"day":c.day,"phase":c.phase.substr(0,40),"event":c.event.substr(0,300),"seed":c.seed.substr(0,128)}
-	# Do not load arbitrary extra metadata from a draft into an exported context.
-	if stored.get("id") is String and stored.id.length()==36:feedback_draft.id=stored.id
-
-func persist_feedback() -> bool:
-	var text:=JSON.stringify(feedback_draft);var temp: String=feedback_draft_path+".tmp";var file=FileAccess.open(temp,FileAccess.WRITE)
-	if file==null:feedback_notice="草稿仍在当前窗口，尚未保存到本机。";return false
-	file.store_string(text);file.flush();var ok: bool=file.get_error()==OK;file.close()
-	if not ok or DirAccess.rename_absolute(temp,feedback_draft_path)!=OK:feedback_notice="草稿仍在当前窗口，尚未保存到本机。";return false
-	return true
-
-func open_native_feedback() -> void:
-	ensure_feedback_draft();feedback_return_screen=screen;screen="feedback";feedback_popup={};feedback_show_context=false
-	if feedback_draft.context==null:feedback_draft.context=feedback_context()
-	persist_feedback()
-
-func feedback_tick(box: Rect2) -> void:image_node(op_from("UI22_selected_19_toggle_on",95).path,Rect2(box.position+Vector2(4,4),Vector2(22,21)))
-
-func render_native_feedback() -> void:
-	ensure_feedback_draft()
-	if feedback_view=="upper":render_feedback_upper()
-	else:render_feedback_comment()
-	if not feedback_popup.is_empty():render_feedback_popup()
-
-func render_feedback_upper() -> void:
-	var id: String="UI26_upper";use_layout(id,[13,18,23,28,33,38,44])
-	for row in [["category",13,12],["duration",18,17],["clarity",23,22],["continuePlay",28,27],["module",33,32],["overall",38,37],["pace",44,43]]:
-		var key: String=row[0];var options: Array=feedback_options(key);var selected: Array=options.filter(func(o):return o[0]==feedback_draft[key]);design_text(id,row[1],selected[0][1] if not selected.is_empty() else "暂不评价／未体验")
-		var b: Array=op_from(id,row[2]).box;var box:=Rect2(b[0],b[1],b[2],b[3]);hit("feedback_field_"+key,box,func():feedback_popup={"key":key,"box":box},key)
-	for i in range(FEEDBACK_ISSUES.size()):
-		var issue: String=FEEDBACK_ISSUES[i];var box:=Rect2(467 if i<5 else 875,631+(i%5)*39,30,30)
-		if issue in feedback_draft.issues:feedback_tick(box)
-		hit("feedback_issue_"+str(i),Rect2(box.position,Vector2(320,35)),func():
-			if issue in feedback_draft.issues:feedback_draft.issues.erase(issue)
-			else:feedback_draft.issues.append(issue)
-			persist_feedback(),issue)
-	hit("feedback_back",Rect2(1105,126,134,60),func():persist_feedback();screen=feedback_return_screen,"返回原页面")
-	hit("feedback_lower",Rect2(451,849,785,76),func():feedback_view="comment","查看文字说明与导出")
-
-func render_feedback_popup() -> void:
-	for b in controls.values():b.disabled=true
-	var shade:=ColorRect.new();shade.size=Vector2(current.canvas[0],current.canvas[1]);shade.color=Color(0,0,0,0.12);shade.mouse_filter=Control.MOUSE_FILTER_STOP;holder.add_child(shade)
-	hit("feedback_popup_cancel",Rect2(Vector2.ZERO,shade.size),func():feedback_popup={},"收起选项，不改变选择")
-	var options: Array=feedback_options(feedback_popup.key);var box: Rect2=feedback_popup.box;var width: float=maxf(340,box.size.x);var height: float=options.size()*34.0;var origin:=Vector2(minf(box.position.x,current.canvas[0]-width-12),minf(box.end.y+2,current.canvas[1]-height-12))
-	var paper:=ColorRect.new();paper.color=Color("f4e7ce");paper.position=origin;paper.size=Vector2(width,height);paper.mouse_filter=Control.MOUSE_FILTER_IGNORE;holder.add_child(paper)
-	for i in range(options.size()):
-		var value: String=options[i][0];var key: String=feedback_popup.key;native_text(options[i][1],Rect2(origin+Vector2(9,i*34+2),Vector2(width-18,32)),19)
-		hit("feedback_option_"+str(i),Rect2(origin+Vector2(0,i*34),Vector2(width,34)),func():feedback_draft[key]=value;feedback_popup={};persist_feedback(),options[i][1])
-
-func render_feedback_comment() -> void:
-	var id: String="UI26_normal";use_layout(id,[9,20,27])
-	design_text(id,9,"将附带的定位信息（只读）" if feedback_show_context else "最想改的一件事：发生了什么、哪里不明白，或希望怎么改？")
-	design_text(id,20,"未配置在线提交");design_text(id,27,feedback_notice if not feedback_notice.is_empty() else "未在线提交。导出文件不会自动发送给制作方。")
-	if feedback_show_context:
-		prose(JSON.stringify(feedback_draft.context,"  "),Rect2(466,376,745,100),19)
-		native_text("更新为当前位置",Rect2(1004,481,202,28),18)
-		hit("feedback_refresh_context",Rect2(990,477,220,35),func():feedback_draft.context=feedback_context();persist_feedback(),"只更新这份反馈的定位信息")
-	else:
-		feedback_editor=TextEdit.new();feedback_editor.name="feedback_comment";feedback_editor.position=Vector2(466,376);feedback_editor.size=Vector2(745,132);feedback_editor.wrap_mode=TextEdit.LINE_WRAPPING_BOUNDARY;feedback_editor.text=feedback_draft.comment;feedback_editor.placeholder_text="请描述实际遇到的问题，不填写个人信息。"
-		feedback_editor.add_theme_font_override("font",fonts[FONT_REG+"#2"]);feedback_editor.add_theme_font_size_override("font_size",20);feedback_editor.add_theme_color_override("font_color",Color("372b21"));feedback_editor.add_theme_color_override("font_placeholder_color",Color("8d765c"))
-		for style in ["normal","focus","read_only"]:feedback_editor.add_theme_stylebox_override(style,StyleBoxEmpty.new())
-		feedback_editor.text_changed.connect(func():
-			var text: String=feedback_editor.text.substr(0,2000)
-			if feedback_editor.text!=text:feedback_editor.text=text
-			feedback_draft.comment=text;persist_feedback())
-		holder.add_child(feedback_editor)
-	for row in [["includeContext",Rect2(455,574,30,30)],["consent",Rect2(455,617,30,30)]]:
-		var key: String=row[0];var box: Rect2=row[1]
-		if feedback_draft[key]:feedback_tick(box)
-		hit("feedback_"+key,Rect2(box.position,Vector2(585,35)),func():feedback_draft[key]=not feedback_draft[key];persist_feedback(),"切换本项")
-	hit("feedback_context",Rect2(1044,574,192,35),func():feedback_show_context=not feedback_show_context,"查看或收起定位信息；不含整份存档")
-	var submit:=hit("feedback_submit",Rect2(521,683,253,60),func():pass,"未配置在线提交地址；请导出本机文件");submit.disabled=true
-	hit("feedback_export",Rect2(811,683,234,60),func():choose_feedback_export(),"导出本机 JSON，不在线发送")
-	hit("feedback_back",Rect2(1083,683,151,60),func():persist_feedback();screen=feedback_return_screen,"保留草稿并返回")
-	hit("feedback_upper",Rect2(1068,205,178,42),func():feedback_view="upper","返回上方评价选项")
-
-func feedback_payload() -> Dictionary:
-	if feedback_draft.id.is_empty():
-		var bytes: PackedByteArray=Crypto.new().generate_random_bytes(16);bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;var hex: String=bytes.hex_encode();feedback_draft.id=hex.substr(0,8)+"-"+hex.substr(8,4)+"-"+hex.substr(12,4)+"-"+hex.substr(16,4)+"-"+hex.substr(20,12)
-	var answers: Dictionary={}
-	for key in ["category","module","overall","clarity","pace","continuePlay","duration","issues","comment"]:answers[key]=feedback_draft[key]
-	answers.comment=answers.comment.strip_edges()
-	return {"schema":1,"id":feedback_draft.id,"answers":answers,"context":feedback_draft.context if feedback_draft.includeContext else null,"consent":feedback_draft.consent,"delivery":"仅导出，未在线提交"}
-
-func write_feedback_file(path: String) -> bool:
-	var text:=JSON.stringify(feedback_payload(),"  ");var file=FileAccess.open(path,FileAccess.WRITE)
-	if file==null:feedback_notice="未能写入反馈文件，草稿仍保留。";return false
-	file.store_string(text);file.flush();var ok: bool=file.get_error()==OK;file.close()
-	if not ok or FileAccess.get_file_as_string(path)!=text:feedback_notice="未确认文件写入完成，草稿仍保留。";return false
-	feedback_notice="已写入本机反馈文件，未发送给制作方。";persist_feedback();return true
-
-func choose_feedback_export() -> void:
-	var dialog:=FileDialog.new();dialog.access=FileDialog.ACCESS_FILESYSTEM;dialog.file_mode=FileDialog.FILE_MODE_SAVE_FILE;dialog.filters=PackedStringArray(["*.json ; 京字反馈文件"]);dialog.title="导出本机反馈（不会在线发送）";dialog.current_file="京字反馈.json";add_child(dialog)
-	dialog.file_selected.connect(func(path: String):write_feedback_file(path);dialog.queue_free();render_screen());dialog.canceled.connect(func():feedback_notice="已取消导出，草稿仍保留。";dialog.queue_free();render_screen());dialog.popup_centered_ratio(0.7)
-
-func _unhandled_input(event: InputEvent) -> void:
-	if screen!="feedback" or not feedback_popup.is_empty() or not event is InputEventMouseButton or not event.pressed:return
-	if event.button_index==MOUSE_BUTTON_WHEEL_DOWN and feedback_view=="upper":feedback_view="comment"
-	elif event.button_index==MOUSE_BUTTON_WHEEL_UP and feedback_view=="comment":feedback_view="upper"
-	else:return
-	render_screen();get_viewport().set_input_as_handled()
-
-func _aux_parent_4__unhandled_key_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_ESCAPE and screen=="feedback":
-		if not feedback_popup.is_empty():feedback_popup={}
-		else:persist_feedback();screen=feedback_return_screen
-		render_screen();get_viewport().set_input_as_handled();return
-	_aux_parent_3__unhandled_key_input(event)
 
 
 func _aux_parent_4_open_photo_records() -> void:
@@ -1318,32 +1115,30 @@ func _aux_parent_4_render_native_ending() -> void:
 		hit("ending_restart",Rect2(685,750,340,75),func():screen="menu","返回主菜单；现有磁盘存档保留")
 		return
 	var layout_id: String="SVG_jing_ui13_16_reconstruction_20261024_UI16_reconstruction_v04"
-	use_layout(layout_id,[11,21,22,23,33,35,36,37]);design_text(layout_id,33,view.ending.title);design_text(layout_id,35,str(int(view.prints)));design_text(layout_id,36,str(int(view.selected)));design_text(layout_id,37,str(int(view.transferred)))
+	use_layout(layout_id,[7,8,9,10,11,20,21,22,23,33,35,36,37]);design_text(layout_id,33,view.ending.title);design_text(layout_id,35,str(int(view.prints)));design_text(layout_id,36,str(int(view.selected)));design_text(layout_id,37,str(int(view.transferred)))
+	var illustration: Dictionary=op_from(layout_id,7).duplicate(true);illustration.box=[1098,228,140,144];add_display_op(illustration)
+	var rail: Dictionary=op_from(layout_id,8).duplicate(true);rail.points=[[1257,399],[1257,545]];add_display_op(rail)
+	var up: Dictionary=op_from(layout_id,9).duplicate(true);up.points=[[1252,388],[1257,378],[1262,388]];add_display_op(up)
+	var down: Dictionary=op_from(layout_id,10).duplicate(true);down.points=[[1252,551],[1257,561],[1262,551]];add_display_op(down)
 	var text: String=view.ending.text+"\n\n"+"\n\n".join(view.family)
-	var body:=prose(text,Rect2(438,437,790,130),22);body.name="ending_prose";body.scroll_active=true
+	var body:=prose(text,Rect2(438,390,790,173),22);body.name="ending_prose";body.scroll_active=true
 	var bar:=body.get_v_scroll_bar();bar.hide()
-	var operation: Dictionary=op_from(layout_id,11);var thumb:=image_node(operation.path,Rect2(1252,350,10,81));thumb.name="ending_scroll_thumb"
-	var track:=Control.new();track.name="ending_scroll_track";track.position=Vector2(1247,350);track.size=Vector2(20,180);track.mouse_filter=Control.MOUSE_FILTER_STOP;track.tooltip_text="拖动或滚轮回看完整后记";holder.add_child(track)
+	var operation: Dictionary=op_from(layout_id,11);var thumb:=image_node(operation.path,Rect2(1252,398,10,81));thumb.name="ending_scroll_thumb"
+	var track:=Control.new();track.name="ending_scroll_track";track.position=Vector2(1247,398);track.size=Vector2(20,148);track.mouse_filter=Control.MOUSE_FILTER_STOP;track.tooltip_text="拖动或滚轮回看完整后记";holder.add_child(track)
 	track.gui_input.connect(func(event):
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index==MOUSE_BUTTON_WHEEL_UP:bar.value-=40
 			elif event.button_index==MOUSE_BUTTON_WHEEL_DOWN:bar.value+=40
-			elif event.button_index==MOUSE_BUTTON_LEFT:bar.value=clampf((event.position.y-thumb.size.y/2)/maxf(1,180-thumb.size.y),0,1)*maxf(0,bar.max_value-bar.page)
+			elif event.button_index==MOUSE_BUTTON_LEFT:bar.value=clampf((event.position.y-thumb.size.y/2)/maxf(1,148-thumb.size.y),0,1)*maxf(0,bar.max_value-bar.page)
 			track.accept_event()
 		elif event is InputEventMouseMotion and event.button_mask&MOUSE_BUTTON_MASK_LEFT:
-			bar.value=clampf((event.position.y-thumb.size.y/2)/maxf(1,180-thumb.size.y),0,1)*maxf(0,bar.max_value-bar.page);track.accept_event())
+			bar.value=clampf((event.position.y-thumb.size.y/2)/maxf(1,148-thumb.size.y),0,1)*maxf(0,bar.max_value-bar.page);track.accept_event())
 	bar.value_changed.connect(func(_v):ending_scroll_offset=bar.value;sync_ending_thumb(bar,thumb))
-	ending_scroll_button("ending_scroll_up",Rect2(1242,327,30,23),func():bar.value-=60)
-	ending_scroll_button("ending_scroll_down",Rect2(1242,532,30,23),func():bar.value+=60)
+	ending_scroll_button("ending_scroll_up",Rect2(1242,374,30,23),func():bar.value-=60)
+	ending_scroll_button("ending_scroll_down",Rect2(1242,547,30,23),func():bar.value+=60)
 	call_deferred("restore_ending_scroll",weakref(body),weakref(thumb))
 	hit("ending_records",Rect2(476,736,333,70),func():open_photo_records(),"只读核对实际照片与逐人获知记录")
 	hit("ending_menu",Rect2(1067,737,164,69),func():screen="menu","返回主菜单；不改动结局或磁盘存档")
-
-func _aux_parent_4_render_screen() -> void:
-	if screen=="feedback":
-		controls.clear();primary_bindings.clear();transition_pending=false;render_native_feedback()
-	else:_aux_parent_3_render_screen()
-
 
 var book_return_screen: String="morning"
 
@@ -1461,11 +1256,11 @@ func _aux_parent_5__unhandled_key_input(event: InputEvent) -> void:
 		if event.keycode==KEY_F7 and screen!="photoRecords" and not photo_records_visible():get_viewport().set_input_as_handled();return
 		if event.keycode==KEY_ESCAPE and screen in ["recordMenu","family","photoRecords"]:
 			screen=book_return_screen if screen=="recordMenu" else (family_return_screen if screen=="family" else records_return_screen);render_screen();get_viewport().set_input_as_handled();return
-	_aux_parent_4__unhandled_key_input(event)
+	_aux_parent_2__unhandled_key_input(event)
 
 
 func _aux_parent_5_render_record_menu() -> void:
-	var hidden: Array=[5,6,8,10,12,15,16]
+	var hidden: Array=[5,6,8,10,12,14,15,16]
 	for i in range(18,34):hidden.append(i)
 	for row in [["母亲",1],["罗瑾",2],["安仁叔叔",3],["外祖父",4]]:
 		if not model.present(row[0]):hidden.append(row[1])
@@ -1475,8 +1270,11 @@ func _aux_parent_5_render_record_menu() -> void:
 	var titles: Array=["公开总览","家人近况","家用物件","照片记录","住所主屏","返回当前页面"]
 	var icons: Array=[op_from("UI29_normal",34),op_from("UI27_away",5),op_from("UI28_home",6),op_from("SVG_jing_ui20_24_reconstruction_20261024_UI20_reconstruction",3),op_from("UI29_normal",31),op_from("UI29_normal",18)]
 	for i in range(titles.size()):
-		var op: Dictionary=icons[i];var b: Array=op.box;var scale: float=minf(77/float(b[2]),69/float(b[3]));var size:=Vector2(b[2],b[3])*scale;image_node(op.path,Rect2(Vector2(1268,203+i*89)+(Vector2(77,69)-size)/2,size))
-		design_text("UI29_normal",[19,22,24,26,28,30][i],titles[i])
+		var op: Dictionary=icons[i];var b: Array=op.box;var scale: float=minf(77/float(b[2]),69/float(b[3]));var size:=Vector2(b[2],b[3])*scale;var picture:=image_node(op.path,Rect2(Vector2(1268,203+i*89)+(Vector2(77,69)-size)/2,size))
+		var label:=design_text("UI29_normal",[19,22,24,26,28,30][i],titles[i])
+		if i==3:
+			picture.name="record_photo_icon";label.name="record_photo_label"
+			picture.modulate.a=1.0 if photo_records_visible() else 0.4;label.modulate.a=picture.modulate.a
 	hit("book_close",Rect2(1558,131,48,46),func():screen=book_return_screen,"返回原页面")
 	var overview:=hit("book_overview",Rect2(1257,193,329,83),func():pass,"开发候选：独立公开总览尚未接线");overview.disabled=true
 	hit("book_family",Rect2(1257,282,329,83),func():open_public_family(),"查看已公开的家人近况")
@@ -1491,7 +1289,7 @@ func _aux_parent_5_render_screen() -> void:
 		controls.clear();primary_bindings.clear();transition_pending=false
 		if screen=="recordMenu":render_record_menu()
 		else:render_public_family()
-	else:_aux_parent_4_render_screen()
+	else:_aux_parent_2_render_screen()
 
 
 var household_return_screen: String="recordMenu"
@@ -1568,8 +1366,7 @@ func render_household_home() -> void:
 	hit("household_tool_guide",Rect2(690,708,665,49),func():tool_guide_open=not tool_guide_open,"展开或收起工具用途，不推进游戏")
 	if data.recall.is_empty():design_text(id,112,"暂无可回看的返家口述。")
 	else:
-		design_text(id,112,data.recall.name+" · 有返家口述");design_text(id,115,"回看尚待接线")
-		var button:=hit("household_recall_pending",Rect2(1129,786,244,60),func():pass,"原生返家口述流程尚未接通，不伪造已听完");button.disabled=true
+		design_text(id,112,data.recall.name+" · 返家口述见远行页。")
 	household_tabs(true);hit("household_close",Rect2(1354,128,43,45),func():screen=household_return_screen,"返回记录册");hit("household_back",Rect2(283,840,220,43),func():screen=household_return_screen,"返回记录册")
 
 func render_household_animals() -> void:
@@ -1602,7 +1399,8 @@ func render_household_travel() -> void:
 		var description:=native_text("带走："+("、".join(a.tools) if not a.tools.is_empty() else "未带家用工具")+"；路线："+str(a.route)+("；托问尚未回话" if a.waiting_query else ""),Rect2(590,451,732,45),18);description.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	if recall.is_empty():design_text(id,23,"当前没有待回听的返家口述。");design_text(id,24,"不把尚未返回的人写成已经回家。");design_text(id,25,"所得仍须按实际返家记录清点。")
 	else:
-		person_record_portrait(recall.name,Rect2(350,530,205,155));design_text(id,23,recall.name+"：有返家口述");design_text(id,24,"返家以后讲给罗瑾听的过去。");design_text(id,25,"不会重新选择，也不推进日期。");design_text(id,28,"听他说这几天")
+		person_record_portrait(recall.name,Rect2(350,530,205,155));design_text(id,23,recall.name+"：有返家口述");design_text(id,24,"返家以后讲给罗瑾听的过去。");design_text(id,25,"不会重新选择，也不推进日期。")
+		night_primary("听返家口述",Rect2(1025,583,300,60),25)
 		hit("household_recall",Rect2(1025,583,300,60),func():native_open_recall(recall.id),"回听已经返家的口述")
 	image_node(op_from("UI28_home",116).path,Rect2(1108,180,30,23));native_text("返回记录册",Rect2(1150,176,178,32),20)
 	hit("household_back",Rect2(1100,166,230,53),func():screen=household_return_screen,"返回记录册")
@@ -1678,22 +1476,44 @@ func room_projection() -> Dictionary:
 			if text in p.health:ill=true
 		people[p.name]={"visible":visible,"day_out":outside and p.here,"pose":"ill" if visible and ill else "rest"}
 	var shelter_items: Dictionary=model._object(s.get("shelterItems"));var cycle: Dictionary=model._object(s.get("nightCycle"));var poultry: Dictionary=model._object(model._object(s.get("animals")).get("poultry"));var weather: String=model.current_weather().name
-	return {"people":people,"night":s.phase in ["night","nightEvent"],"weather":weather,"rain":"雨" in weather,"wet":s.moisture>1,"fire":s.phase=="nightEvent" and model._object(cycle.get("plan")).get("fire",0)>0,"rice":public_resource_number("rice"),"rice_pending":rice_count_pending(),"water":public_resource_number("water"),"wood":public_resource_number("wood"),"oilcloth":shelter_items.get("oilcloth",false),"mat":shelter_items.get("mat",false),"bedding":shelter_items.get("bedding",false),"kettle":public_resource_number("water")>0 and model.tool_available("canteen"),"goose":poultry.get("type")=="goose"}
+	var tools: Dictionary={}
+	for id in Model.TOOL_NAMES:
+		tools[id]=model.tool_available(id)
+	return {"tools":tools,"people":people,"night":s.phase in ["night","nightEvent"],"weather":weather,"rain":"雨" in weather,"wet":s.moisture>1,"fire":s.phase=="nightEvent" and model._object(cycle.get("plan")).get("fire",0)>0,"rice":public_resource_number("rice"),"rice_pending":rice_count_pending(),"water":public_resource_number("water"),"wood":public_resource_number("wood"),"oilcloth":shelter_items.get("oilcloth",false),"mat":shelter_items.get("mat",false),"bedding":shelter_items.get("bedding",false),"kettle":tools.canteen,"goose":poultry.get("type")=="goose"}
 
-func render_public_room() -> void:
-	room_data=room_projection()
-	if room_data.is_empty():screen="menu";render_menu();return
+func room_background_operations(data: Dictionary) -> Array:
+	if data.is_empty():return []
 	if room_bindings.is_empty():room_bindings=JSON.parse_string(FileAccess.get_file_as_string("res://data/room_bindings.json"))
-	var data: Dictionary=room_data;var operations: Array=[op_from("UI06_night_fire_submitted" if data.night else "UI06_main",0).duplicate(true)]
+	# Keep one residence palette for the existing people and prop artwork.
+	# Night remains a game phase; fire, weather and household state are unchanged.
+	var operations: Array=[op_from("UI06_main",0).duplicate(true)]
 	if data.wet:operations.append(op_from("UI06_wet",30).duplicate(true))
 	for key in ["oilcloth","mat","bedding","food","woodGT2","wood","kettle","goose"]:
 		var show: bool=data.rice>0 if key=="food" else (data.wood>2 if key=="woodGT2" else (data.wood>0 if key=="wood" else data[key]))
 		if show:operations.append(room_bindings.props[key].duplicate(true))
+	for id in room_bindings.get("equipment",{}):
+		if not data.get("tools",{}).get(id,false):continue
+		var binding: Dictionary=room_bindings.equipment[id]
+		operations.append_array(binding.supports.duplicate(true))
+		var image: Dictionary=binding.image.duplicate(true)
+		var shadow: Dictionary=image.duplicate(true)
+		shadow.id+="_shadow"
+		shadow.shadow={"offset":[2,3],"blur":1.4,"rgb":[34,24,16],"opacity":0.32}
+		operations.append(shadow)
+		operations.append(image)
 	if data.fire:operations.append(op_from("UI06_night_fire_submitted",30).duplicate(true))
 	var people: Array=["母亲","罗瑾","安仁叔叔","外祖父"]
 	for i in range(4):
 		if data.people[people[i]].visible:operations.append(op_from("UI06_all_ill" if data.people[people[i]].pose=="ill" else "UI06_main",i+1).duplicate(true))
 	if data.rain:operations.append(op_from("UI06_rain",30).duplicate(true))
+	for operation in operations:operation.scene_background=true
+	return operations
+
+func render_public_room() -> void:
+	room_data=room_projection()
+	if room_data.is_empty():screen="menu";render_menu();return
+	var data: Dictionary=room_data;var operations: Array=room_background_operations(data)
+	var people: Array=["母亲","罗瑾","安仁叔叔","外祖父"]
 	for i in range(5,30):
 		if i in [9,10,16,18,20,26,29]:continue
 		if i in [21,22,23,24] and not data.people[people[i-21]].visible:continue
@@ -1837,7 +1657,9 @@ func render_expedition_night_controls() -> void:
 		for index in indices:
 			var op: Dictionary=op_from("UI17_main",index).duplicate(true)
 			if index in [39,46,52]:op.stroke="#b51f1c" if selected else "#241e14"
-			if index in [43,49,55] and not reason.is_empty():op.text=reason if reason.length()<=27 else reason.left(26)+"…"
+			if index in [43,49,55] and not reason.is_empty():
+				var display_reason: String=player_facing_text(reason)
+				op.text=display_reason if display_reason.length()<=27 else display_reason.left(26)+"…"
 			if not reason.is_empty() and not selected:op.opacity=0.48
 			add_display_op(op)
 		if selected:selection_dot(287,311+i*103)
@@ -1870,12 +1692,12 @@ func render_expedition_night_controls() -> void:
 		b.pressed.connect(func():
 			if transition_pending:return
 			transition_pending=true;native_expedition_tool(id);call_deferred("render_screen"));content.add_child(b);controls[b.name]=b
-		var texture:=TextureRect.new();texture.texture=load(op_from("UI17_main",icons[id]).path if icons.has(id) else skin.items.axe);texture.position=Vector2(8,8);texture.size=Vector2(77,64);texture.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;texture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;texture.mouse_filter=Control.MOUSE_FILTER_IGNORE;b.add_child(texture)
+		var texture:=TextureRect.new();texture.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;texture.texture=load(op_from("UI17_main",icons[id]).path if icons.has(id) else skin.items.axe);texture.position=Vector2(8,8);texture.size=Vector2(77,64);texture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;texture.mouse_filter=Control.MOUSE_FILTER_IGNORE;b.add_child(texture)
 		var label:=Label.new();label.text=probe.expedition_rules.tool_names[id];label.position=Vector2(0,72);label.size=Vector2(94,25);label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER;label.add_theme_font_override("font",fonts[FONT_REG+"#2"]);label.add_theme_font_size_override("font_size",18);label.add_theme_color_override("font_color",Color("372b21"));label.mouse_filter=Control.MOUSE_FILTER_IGNORE;b.add_child(label)
 		if not available and not selected:texture.modulate.a=0.45;label.modulate.a=0.45
 		if selected:
 			var circle:=Panel.new();circle.position=Vector2(67,3);circle.size=Vector2(23,23);var circle_style:=StyleBoxFlat.new();circle_style.bg_color=Color("a92720");circle_style.border_color=Color("fff2df");circle_style.set_border_width_all(1);circle_style.set_corner_radius_all(12);circle.add_theme_stylebox_override("panel",circle_style);circle.mouse_filter=Control.MOUSE_FILTER_IGNORE;b.add_child(circle)
-			var check_icon:=TextureRect.new();check_icon.texture=load(op_from("UI17_main",91).path);check_icon.position=Vector2(70,6);check_icon.size=Vector2(17,17);check_icon.mouse_filter=Control.MOUSE_FILTER_IGNORE;b.add_child(check_icon)
+			var check_icon:=TextureRect.new();check_icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;check_icon.texture=load(op_from("UI17_main",91).path);check_icon.position=Vector2(70,6);check_icon.size=Vector2(17,17);check_icon.mouse_filter=Control.MOUSE_FILTER_IGNORE;b.add_child(check_icon)
 	for index in [119,120,121,123,124,125,126,127,128]:add_display_op(op_from("UI17_main",index))
 	var box: Dictionary=op_from("UI17_main",117).duplicate(true);box.color="#a92720" if plan.get("rice",0)>0 else "none";add_display_op(box)
 	if plan.get("rice",0)>0:add_display_op(op_from("UI17_main",118))
@@ -1918,7 +1740,7 @@ func overview_household(tab: int) -> void:
 	open_household();household_tab=tab
 
 func render_public_overview() -> void:
-	var family: Array=public_family_projection();var home: Dictionary=public_household_projection();var photos: bool=photo_records_visible();var removed: Array=[3,23,24,25,26,27,37,38,44,45,51,52,58,59,62,65,68,82]
+	var family: Array=public_family_projection();var home: Dictionary=public_household_projection();var photos: bool=photo_records_visible();var removed: Array=[3,23,24,25,26,27,37,38,44,45,51,52,58,59,62,65,68,78,79,80,81,82]
 	for i in range(family.size()):
 		if not family[i].here:removed.append_array([[33,35,36],[40,42,43],[47,49,50],[54,56,57]][i])
 	use_layout(OVERVIEW_LAYOUT,removed);design_text(OVERVIEW_LAYOUT,3,date_label());design_text(OVERVIEW_LAYOUT,23,"远行")
@@ -1946,12 +1768,10 @@ func render_public_overview() -> void:
 	var photo:=hit("overview_photo_tab",Rect2(1125,187,144,80),func():open_photo_records(),"只查看已解锁的照片记录");photo.disabled=not photos
 	hit("overview_family",Rect2(895,560,345,60),func():open_public_family(),"家人详情")
 	hit("overview_household",Rect2(895,627,345,58),func():overview_household(0),"家用与随身物件")
-	hit("overview_disk",Rect2(895,692,345,58),func():open_native_disk(),"保存与恢复；打开不写入")
 	hit("overview_back",Rect2(1510,809,143,64),func():screen=overview_return_screen,"返回原页面，不推进日期")
 
 func _save_ux_parent_0__ready() -> void:
 	super._ready()
-	load_reading_preferences()
 	menu_contract=JSON.parse_string(FileAccess.get_file_as_string("res://data/menu_contract.json"))
 	skin=JSON.parse_string(FileAccess.get_file_as_string("res://data/loadout_skin.json"))
 	city_chronicle=JSON.parse_string(FileAccess.get_file_as_string("res://data/city_chronicle.json"))
@@ -1967,37 +1787,39 @@ func _save_ux_parent_0_begin_game(seed: String="") -> void:
 	room_return_screen="morning";_room_parent_0_begin_game(seed)
 
 
-func _save_ux_parent_0_commit_disk_action() -> void:
-	if disk_pending_state!=var_to_bytes(model.state) or disk_pending_proof!=var_to_bytes(continuation.proof()):disk_notice="当前进度已变化，请重新预览。";screen="disk";return
-	var reader=SaveStore.new()
-	if reader.file_fingerprint(disk_pending_read_path)!=disk_pending_fingerprint:disk_notice="磁盘文件已变化，请重新核对。";disk_info={"ok":false,"reason":"CHANGED"};screen="disk";return
-	if disk_action=="write":
-		var writer=SaveStore.new();writer.active_proof=continuation.proof() if not continuation.actions.is_empty() else {}
-		var ok: bool=writer.save_to(save_path,model.state,disk_pending_fingerprint)
-		disk_notice="已写入并校验本机记录。" if ok else ("文件已提交，但锁释放异常；请先核对。" if writer.last_write_committed else "未写入："+writer.error)
-		screen="disk";inspect_native_disk()
-	elif disk_action=="restore":
-		save_text=disk_pending_text;save_preview=disk_info.state.duplicate(true);restore_preview()
-		if screen=="diskConfirm":disk_notice=save_notice;screen="disk"
-	disk_action=""
-
+func visible_help_guides() -> Array:
+	if help_data.is_empty():help_data=JSON.parse_string(FileAccess.get_file_as_string("res://data/native_help.json"))
+	return help_data.guides.filter(func(guide):return str(guide[0])!="史实与创作边界")
 
 func _save_ux_parent_0_render_native_help() -> void:
-	if help_data.is_empty():help_data=JSON.parse_string(FileAccess.get_file_as_string("res://data/native_help.json"))
-	var hidden: Array=[17,18,36]
+	var guides: Array=visible_help_guides();var last: int=guides.size()-1
+	help_page=clampi(help_page,0,last)
+	var hidden: Array=[17,18,20,21,23,32,35,36,37,38]
+	for i in range(6,17):hidden.append(i)
 	if help_page>0:
 		for i in range(20,34):hidden.append(i)
-	use_layout("UI21",hidden);var guides: Array=help_data.guides
-	design_text("UI21",18,str(help_page+1)+" / 11 · "+str(guides[help_page][0]))
-	var marker: Dictionary=op_from("UI21",17).duplicate(true);marker.box[1]+=42*help_page
-	if not textures.has(marker.path):textures[marker.path]=load(marker.path)
-	var layer=Layer.new();layer.current={"canvas":current.canvas,"operations":[marker]};layer.textures=textures;layer.fonts=fonts;layer.size=Vector2(current.canvas[0],current.canvas[1]);layer.mouse_filter=Control.MOUSE_FILTER_IGNORE;holder.add_child(layer)
-	for i in range(11):
+	if help_page==last:hidden.append_array([41,42])
+	if help_page==0:hidden.append_array([39,40])
+	use_layout("UI21",hidden)
+	if help_page==0:
+		for index in [39,40]:
+			var previous_op: Dictionary=op_from("UI21",index).duplicate(true);previous_op.opacity=0.4;add_display_op(previous_op)
+	if help_page==last:
+		var disabled_background: Dictionary=op_from("UI02_05_02_disabled",11).duplicate(true)
+		disabled_background.box=op_from("UI21",41).box.duplicate();add_display_op(disabled_background);add_display_op(op_from("UI21",42))
+	for i in range(guides.size()):
+		var topic: Dictionary=op_from("UI21",6).duplicate(true);topic.text=str(i+1)+".  "+str(guides[i][0]);topic.xy=[375,299+i*42];add_display_op(topic)
 		var index: int=i;hit("help_topic_"+str(i),Rect2(365,270+i*42,250,38),func():help_page=index,str(guides[i][0]))
+	design_text("UI21",18,str(help_page+1)+" / "+str(guides.size())+" · "+str(guides[help_page][0]))
+	if help_page==0:
+		design_text("UI21",20,"家人和物件可从住所场景或记录册查看；当前行动在右下。")
+		design_text("UI21",21,"菜单可继续游戏、查看说明或返回主菜单。")
+		design_text("UI21",23,"常用入口");design_text("UI21",32,"继续、说明与返回")
+	var marker: Dictionary=op_from("UI21",17).duplicate(true);marker.box[1]+=42*help_page;add_display_op(marker)
 	if help_page>0:
 		var body:=prose(str(guides[help_page][1]),Rect2(631,285,724,435),22);body.name="help_prose";body.scroll_active=true;add_help_scroll(body)
 	var previous:=hit("help_previous",Rect2(916,748,115,49),func():help_page=maxi(0,help_page-1),"上一条");previous.disabled=help_page==0
-	var next:=hit("help_next",Rect2(1042,752,132,42),func():help_page=mini(10,help_page+1),"下一条");next.disabled=help_page==10
+	var next:=hit("help_next",Rect2(1042,752,132,42),func():help_page=mini(last,help_page+1),"下一条");next.disabled=help_page==last
 	hit("help_back",Rect2(1220,747,166,51),func():screen=help_return_screen,"返回原页面，不推进游戏")
 
 
@@ -2005,22 +1827,6 @@ func _save_ux_parent_0_render_screen() -> void:
 	if screen=="overview":controls.clear();primary_bindings.clear();transition_pending=false;render_public_overview()
 	else:_expedition_ui_parent_2_render_screen()
 
-
-func _save_ux_parent_0_restore_preview() -> void:
-	# Re-validate the current input, never trust a stale preview of previously pasted text.
-	var candidate: Dictionary=save_store.decode(save_text)
-	if candidate.is_empty() or candidate!=save_preview:save_preview={};save_notice="输入已变化，请重新校验。";return
-	var candidate_proof: Dictionary=save_store.decoded_proof.duplicate(true)
-	if not model.state.is_empty():
-		# Keep the current unsaved run independently before replacing it.
-		if not save_current_to(save_path+".before-restore"):save_notice="未能备份当前进度，已取消恢复："+save_store.error;return
-	model.state=candidate;model.rng.state=int(candidate.rngState);restore_continuation(candidate_proof)
-	model.contract_error="";model.contract_message="";model.diet_legacy_depth=0
-	screen=candidate.phase;night_stage="reading";morning_tab="city";save_preview={}
-
-func _save_ux_parent_0_save_current_to(path: String) -> bool:
-	save_store.active_proof=continuation.proof() if not continuation.actions.is_empty() else {}
-	return save_store.save_to(path,model.state)
 
 var autosave_enabled: bool=true
 
@@ -2048,6 +1854,8 @@ var new_game_seed: String=""
 
 var new_game_expected_sha: String=""
 
+var new_game_expected_backup_sha: String=""
+
 var new_game_notice: String=""
 
 var new_game_backup: String=""
@@ -2067,44 +1875,93 @@ func observe_autosave() -> void:
 
 func flush_autosave(show_error: bool=true) -> bool:
 	autosave_queued=false
-	if model.state.is_empty() or state_stamp()==autosave_saved:return true
+	if model.state.is_empty():return true
 	if autosave_paused:return false
+	if state_stamp()==autosave_saved:return true
 	var stamp:=state_stamp();save_store.active_proof=continuation.proof() if not continuation.actions.is_empty() else {}
 	var ok: bool=save_store.save_to(save_path,model.state,autosave_expected_sha)
 	if ok or save_store.last_write_committed:
-		autosave_saved=stamp;autosave_expected_sha=save_store.file_fingerprint(save_path);autosave_writes+=1
+		autosave_saved=stamp;autosave_expected_sha=save_store.last_write_sha256;autosave_writes+=1
 	if ok:autosave_notice="";return true
 	autosave_paused=true
-	autosave_notice=("记录已经写入，但锁释放异常。请到存档管理中核对。" if save_store.last_write_committed else "自动保存未完成，当前游戏仍保留在内存中。"+save_failure_reason(save_store.error)+"请到存档管理中核对，未擅自覆盖其他记录。")
+	autosave_notice=("记录已写入，但保存锁未释放。锁释放后可重试，不会重复覆盖。" if save_store.last_write_committed else "当前进度尚未保存。"+save_failure_reason(save_store.error)+"重试只在主记录未变化、占用已结束时恢复。")
+	autosave_notice+="继续游戏后可从菜单重试；也可关闭窗口并按提示退出。"
 	if show_error and screen not in ["confirmQuit","confirmNewGame"]:
 		autosave_return_screen=screen;screen="autoSaveFailure";call_deferred("render_screen")
 	return false
 
-func adopt_primary_if_current() -> bool:
-	if model.state.is_empty():return false
-	var reader=SaveStore.new();var saved: Dictionary=reader.read_valid(save_path)
-	if saved.is_empty() or var_to_bytes(saved)!=var_to_bytes(model.state):return false
-	autosave_expected_sha=save_store.file_fingerprint(save_path);autosave_saved=state_stamp();autosave_seen=autosave_saved;autosave_paused=false;autosave_notice=""
-	if disk_return_screen=="autoSaveFailure":disk_return_screen=autosave_return_screen
-	return true
+func retry_autosave() -> bool:
+	# Never replace the expected fingerprint to force a failed write through.
+	if save_store.file_fingerprint(save_path)!=autosave_expected_sha:
+		autosave_paused=true;autosave_notice="主记录在本次载入或保存后已变化，未覆盖新的记录。当前进度仍在内存中；请保留此窗口，或关闭窗口并确认放弃未保存部分。";return false
+	if DirAccess.dir_exists_absolute(save_path+".lock"):
+		autosave_paused=true;autosave_notice="存档仍被占用，未写入或删除保存锁。请等待另一处保存结束后重试；若占用不能解除，可保留此窗口，或关闭窗口并按提示退出。";return false
+	autosave_paused=false
+	if not flush_autosave(false):return false
+	autosave_notice="";save_notice="已保存到本机记录。";screen=autosave_return_screen;return true
 
-func start_new_game_now(seed: String) -> void:
-	autosave_paused=false;autosave_notice="";autosave_saved="";autosave_seen="";autosave_expected_sha=save_store.file_fingerprint(save_path);_save_ux_parent_0_begin_game(seed)
+func start_new_game_now(seed: String, expected_sha: String) -> void:
+	autosave_paused = false
+	autosave_notice = ""
+	autosave_saved = ""
+	autosave_seen = ""
+	autosave_expected_sha = expected_sha
+	_save_ux_parent_0_begin_game(seed)
 
 func confirm_new_game() -> bool:
-	if save_store.file_fingerprint(save_path)!=new_game_expected_sha:new_game_notice="磁盘记录在确认前已变化。请取消后重新打开确认，不覆盖新变化。";return false
-	if FileAccess.file_exists(save_path):
-		var data:=FileAccess.get_file_as_bytes(save_path);var path: String=save_path+".before-newgame-"+str(Time.get_ticks_usec())+"-"+new_game_expected_sha.left(8)+".json"
-		if FileAccess.file_exists(path):new_game_notice="备份路径已存在，未开始新记录。";return false
-		var f=FileAccess.open(path,FileAccess.WRITE)
-		if f==null:new_game_notice="无法备份现有记录，未开始新记录。";return false
-		f.store_buffer(data);f.close()
-		if FileAccess.get_sha256(path)!=new_game_expected_sha:new_game_notice="备份校验未通过，未开始新记录。";return false
-		new_game_backup=path
-	start_new_game_now(new_game_seed);return true
+	var lock_path: String = save_path + ".lock"
+	if DirAccess.make_dir_absolute(lock_path) != OK:
+		new_game_notice = "现有记录正在保存或暂时无法访问。请稍后重试，当前进度已保留。"
+		return false
+	var archived: bool = archive_new_game_records()
+	if DirAccess.remove_absolute(lock_path) != OK:
+		new_game_notice = "旧记录保护已暂停，保存占用未能结束。当前进度已保留。"
+		return false
+	if not archived:
+		return false
+	start_new_game_now(new_game_seed, new_game_expected_sha)
+	return true
+
+func archive_new_game_records() -> bool:
+	var expected_records: Dictionary = {save_path: new_game_expected_sha, save_path + ".bak": new_game_expected_backup_sha}
+	for record_path in expected_records:
+		if save_store.file_fingerprint(record_path) != expected_records[record_path]:
+			new_game_notice = "磁盘记录在确认前已变化。请取消后重新打开确认，当前进度已保留。"
+			return false
+	new_game_backup = ""
+	var archive_id: String = str(Time.get_ticks_usec())
+	for record_path in expected_records:
+		if not FileAccess.file_exists(record_path):
+			continue
+		var expected_sha: String = expected_records[record_path]
+		var archive_path: String = record_path + ".before-newgame-" + archive_id + "-" + expected_sha.left(8) + ".json"
+		if FileAccess.file_exists(archive_path):
+			new_game_notice = "旧记录保护路径已存在，请重试。当前进度已保留。"
+			return false
+		var data: PackedByteArray = FileAccess.get_file_as_bytes(record_path)
+		var archive := FileAccess.open(archive_path, FileAccess.WRITE)
+		if archive == null:
+			new_game_notice = "无法保留现有记录，请检查存储空间后重试。当前进度已保留。"
+			return false
+		archive.store_buffer(data)
+		archive.flush()
+		var write_error: Error = archive.get_error()
+		archive.close()
+		if write_error != OK or FileAccess.get_sha256(archive_path) != expected_sha:
+			new_game_notice = "旧记录保护校验未通过。当前进度已保留。"
+			return false
+		if new_game_backup.is_empty():
+			new_game_backup = archive_path
+	for record_path in expected_records:
+		if save_store.file_fingerprint(record_path) != expected_records[record_path]:
+			new_game_notice = "磁盘记录在保护期间已变化。请取消后重新打开确认，当前进度已保留。"
+			return false
+	return true
 
 func request_window_close() -> void:
-	if model.state.is_empty() or state_stamp()==autosave_saved:quit_game_now();return
+	if screen == "confirmQuit":
+		return
+	if model.state.is_empty() or (state_stamp()==autosave_saved and not autosave_paused):quit_game_now();return
 	var old: String=screen
 	if flush_autosave(false):quit_game_now();return
 	close_return_screen=old;close_message="本次记录已写入，但保存收尾异常。" if state_stamp()==autosave_saved else "当前最新进度尚未保存。直接退出会丢失未保存部分。"
@@ -2117,16 +1974,17 @@ func _notification(what: int) -> void:
 
 func render_save_ux_confirmation() -> void:
 	var id: String="UI25_daytime";use_layout(id,[2,4,9,10,11,14,17]);var title: String;var detail: String;var primary: String;var secondary: String
-	if screen=="confirmNewGame":title="开始新记录";detail=new_game_notice;primary="备份旧记录并开始";secondary="取消，保留当前进度"
-	elif screen=="confirmQuit":title="确认退出游戏";detail=close_message;primary="仍然退出";secondary="返回游戏，先处理保存"
-	else:title="自动保存未完成";detail=autosave_notice;primary="打开存档管理";secondary="返回游戏" if state_stamp()==autosave_saved else "继续游戏（尚未保存）"
-	design_text(id,2,title);design_text(id,4,"只操作本机原生记录，不上传或发送存档")
-	var body:=prose(detail,Rect2(579,470,530,150),22);body.name="save_ux_message"
+	if screen=="confirmNewGame":title="开始新记录";detail=new_game_notice;primary="确认开始新记录";secondary="取消，保留当前进度"
+	elif screen=="confirmQuit":title="确认退出游戏";detail=close_message;primary="仍然退出";secondary="返回游戏，暂不退出"
+	else:title="自动保存未完成";detail=autosave_notice;primary="重试保存";secondary="返回游戏" if state_stamp()==autosave_saved else "继续游戏（尚未保存）"
+	design_text(id,2,title);design_text(id,4,"请确认后继续。取消会保留当前进度。")
+	# UI25's notebook illustration ends at y=516; the primary button starts at 677.
+	var body:=prose(detail,Rect2(579,535,530,125),22);body.name="save_ux_message"
 	design_text(id,14,primary);design_text(id,17,secondary)
 	hit("save_ux_primary",Rect2(594,677,490,60),func():
 		if screen=="confirmNewGame":confirm_new_game()
 		elif screen=="confirmQuit":quit_game_now()
-		else:open_native_disk(),primary)
+		else:retry_autosave(),primary)
 	hit("save_ux_cancel",Rect2(604,747,470,60),func():screen=close_return_screen if screen=="confirmQuit" else autosave_return_screen,secondary)
 
 func save_failure_reason(reason: String) -> String:
@@ -2143,22 +2001,22 @@ func _pigeon_ui_parent_0_render_animal_card() -> void:
 	var animal=model.state.animals.get(animal_tab)
 	if animal==null:
 		native_text("家中尚无动物",Rect2(1060,320,350,45),28)
-		prose("遇见动物时可决定是否留下。",Rect2(1060,375,350,70),21)
+		prose("遇见动物时可决定是否留下。",Rect2(1060,369,350,46),21)
 	else:
 		var path: String=op_from("UI17_main",59).path if animal.type=="goose" else skin.items.pigeon
 		if animal_tab=="pet":path=op_from("UI17_animal_overview",11 if animal.type=="cat" else 15).path
-		var picture=image_node(path,Rect2(1024,288,210,144));picture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		var picture=image_node(path,Rect2(1045,313,180,108));picture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		var feeding: bool=model.state.night.feedPet if animal_tab=="pet" else model.state.night.feedPoultry
-		var label=native_text(("已备粮：" if feeding else "备粮：")+model.animal_name(animal),Rect2(1243,303,215,58),22);label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var label=native_text(("已备粮：" if feeding else "备粮：")+model.animal_name(animal),Rect2(1243,313,215,48),22);label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 		prose("确认时米粮 ×1，按周期喂养。",Rect2(1243,366,210,60),18)
 		var slot: String=animal_tab
-		hit("night_feed_"+slot,Rect2(1235,295,223,125),func():native_feed_animal(slot),"切换备粮")
-		native_text("两类动物独立备粮；总耗粮见下方。",Rect2(1029,438,425,35),18)
+		hit("night_feed_"+slot,Rect2(1235,311,223,107),func():native_feed_animal(slot),"切换备粮")
+		native_text("两类动物独立备粮；总耗粮见下方。",Rect2(1029,420,425,24),17)
 	for i in range(2):
 		var slot: String=["poultry","pet"][i];var x: int=1035+i*215
 		var label: String=["禽类","宠物"][i];var feeding: bool=model.state.night.feedPoultry if i==0 else model.state.night.feedPet
-		native_text(("● " if animal_tab==slot else "○ ")+label+(" · 已备粮" if feeding else ""),Rect2(x,478,210,32),18)
-		hit("animal_tab_"+slot,Rect2(x,475,210,35),func():animal_tab=slot).disabled=model.state.animals.get(slot)==null
+		native_text(("● " if animal_tab==slot else "○ ")+label+(" · 已备粮" if feeding else ""),Rect2(x,274,210,32),18)
+		hit("animal_tab_"+slot,Rect2(x,272,210,35),func():animal_tab=slot).disabled=model.state.animals.get(slot)==null
 
 func _pigeon_ui_parent_0_render_screen() -> void:
 	if screen in ["autoSaveFailure","confirmQuit","confirmNewGame"]:
@@ -2176,3 +2034,49 @@ func bird_note_available() -> bool:
 func bird_option(value: String,box: Rect2,offset: Vector2,allowed: bool) -> void:
 	var b:=hit("pigeon_"+value,Rect2(box.position+offset,box.size),func():native_pigeon_action(value),"只预选；确认夜晚后执行")
 	b.disabled=not allowed
+
+# Player-facing copy is separate from model strings and historical source data.
+# Match complete labels or explicit sentences once, never individual keywords.
+var player_copy_rules: Array=[]
+var player_copy_loaded: bool=false
+func player_facing_text(value: String) -> String:
+	if not player_copy_loaded:
+		player_copy_loaded=true
+		var parsed: Variant=JSON.parse_string(FileAccess.get_file_as_string("res://data/player_copy.json"))
+		if parsed is Array:player_copy_rules=parsed
+		else:load_errors.append("player copy unavailable")
+	for rule in player_copy_rules:
+		if value==str(rule.old):return str(rule.new)
+	var result: String="";var cursor: int=0
+	while cursor<value.length():
+		var best_at: int=-1;var best_old: String="";var best_new: String=""
+		for rule in player_copy_rules:
+			if not rule.partial:continue
+			var old: String=str(rule.old);var at: int=value.find(old,cursor)
+			if at>=0 and (best_at<0 or at<best_at or (at==best_at and old.length()>best_old.length())):
+				best_at=at;best_old=old;best_new=str(rule.new)
+		if best_at<0:return result+value.substr(cursor)
+		result+=value.substr(cursor,best_at-cursor)+best_new
+		cursor=best_at+best_old.length()
+	return result
+
+func apply_player_copy(node: Node) -> void:
+	if node is Label or node is RichTextLabel or node is Button:
+		var replacement: String=player_facing_text(node.text)
+		if node is RichTextLabel:
+			while "\n\n\n" in replacement:replacement=replacement.replace("\n\n\n","\n\n")
+			replacement=replacement.strip_edges()
+		if replacement!=node.text:node.text=replacement
+	if node is Control and not node.tooltip_text.is_empty():node.tooltip_text=player_facing_text(node.tooltip_text)
+	if node is Layer:
+		var operations: Array=node.current.get("operations",[]);var copy: Array=[];var changed: bool=false
+		for operation in operations:
+			if operation.get("type")=="text":
+				var replacement: String=player_facing_text(str(operation.get("text","")))
+				if replacement!=str(operation.get("text","")):
+					var text_op: Dictionary=operation.duplicate(true);text_op.text=replacement;copy.append(text_op);changed=true;continue
+			# Keep image operation references used by button hover/disabled bindings.
+			copy.append(operation)
+		if changed:
+			var display: Dictionary=node.current.duplicate();display.operations=copy;node.current=display;node.queue_redraw()
+	for child in node.get_children():apply_player_copy(child)

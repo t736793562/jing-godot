@@ -18,6 +18,14 @@ func _ready() -> void:
 		load_errors.append("layout data unavailable")
 		return
 	layouts = parsed
+	# The packaged UI12 operations retain SVG viewBox coordinates (1672 x 941).
+	# Its 1920 x 1080 width/height are output pixels, not the operation canvas.
+	for layout in layouts:
+		if layout.id=="SVG_jing_ui12_reconstruction_20261024_UI12_reconstruction_v04":
+			layout.canvas=[1672,941]
+		elif layout.id in ["SVG_content_states_day49","SVG_content_states_normal_day","SVG_content_states_long_top","SVG_content_states_long_middle","SVG_content_states_long_bottom","SVG_content_states_short_text","SVG_content_states_arrival_day"]:
+			# These seven samples share a 1672 x 982 SVG viewBox.
+			layout.canvas=[1672,982]
 	for path in [FONT_REG,FONT_BOLD,FONT_SANS,"res://fonts/57f73e11f51999432bf7ab22ce55b6f945d5eca1bf824404cfa9ec2e3718c84e.ttf"]:
 		var font: FontFile = load(path)
 		fonts[path] = font

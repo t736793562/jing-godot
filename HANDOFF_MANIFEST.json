@@ -3605,6 +3605,12 @@
       "group": "runtime"
     },
     {
+      "path": "project/data/player_copy.json",
+      "bytes": 54572,
+      "sha256": "4c2459d9988b845957715953b4f975f4c74c860da984b1c46600e98602fd51d9",
+      "group": "plain"
+    },
+    {
       "path": "project/data/pre_photo_care_raw_prose.json",
       "bytes": 940932,
       "sha256": "e18139df0c8062df8cbd43f09a198fc851883a0964bff168a630de7d1d35908d",
@@ -3822,8 +3828,8 @@
     },
     {
       "path": "project/scripts/game_controller.gd",
-      "bytes": 160413,
-      "sha256": "4d920660ea3f7b08944d614a87990a4db434b57a3728b468c5e9a45863faa746",
+      "bytes": 150408,
+      "sha256": "472631366b32bb540fc5cd983cc82b24bb2590c66292663bcc6037fcf448a833",
       "group": "plain"
     },
     {
@@ -3882,8 +3888,8 @@
     },
     {
       "path": "project/scripts/layout_view.gd",
-      "bytes": 4976,
-      "sha256": "a2507e8ec0367eb22bfbd76cb292074d913829117c90a384c2eae566aad3f8fd",
+      "bytes": 5591,
+      "sha256": "86d0ec341efce275188533f81730c670ed21cfb905a73347d5094e7a6baec8b5",
       "group": "plain"
     },
     {
@@ -3930,8 +3936,8 @@
     },
     {
       "path": "project/scripts/native_save.gd",
-      "bytes": 28923,
-      "sha256": "d148730712c8010c1ea4afa6f09199784a11d0efdc28c2368d89195c53422276",
+      "bytes": 29016,
+      "sha256": "c057f15e19a1cfd9490e187cd5a8685491bea59331d71f8d14b82fe449d07618",
       "group": "plain"
     },
     {

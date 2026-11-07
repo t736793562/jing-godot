@@ -259,8 +259,10 @@ func write_text(path: String,text: String) -> bool:
 func replace_file(from: String,to: String) -> Error:
 	return DirAccess.rename_absolute(from,to)
 var last_write_committed: bool=false
+var last_write_sha256: String=""
 func save_to(path: String,state: Dictionary,expected_previous: Variant=null) -> bool:
 	last_write_committed=false
+	last_write_sha256=""
 	var text:=encode(state)
 	if text.is_empty():return false
 	# Cooperative cross-process lock. A crash leaves a visible lock instead of silently
@@ -286,6 +288,7 @@ func write_locked(path: String,text: String,expected_previous: Variant) -> bool:
 		if replace_file(path+".bak.tmp",path+".bak")!=OK:error="BACKUP_RENAME";return false
 	if file_fingerprint(path)!=original:error="WRITE_CONFLICT";return false
 	if replace_file(temp,path)!=OK:error="PRIMARY_RENAME";return false
+	last_write_sha256=text.sha256_text()
 	last_write_committed=true;error="";return true
 func load_from(path: String,model) -> Dictionary:
 	var state:=read_valid(path);var source: String="primary";var primary_error:=error

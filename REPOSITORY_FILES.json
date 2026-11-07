@@ -1,9 +1,15 @@
 [
   {
+    "path": ".gitattributes",
+    "bytes": 93,
+    "sha256": "381787681d4c1832a1a3a0fecd351bc0d1c82698face9e71b4a0c4fddba77c64",
+    "git_blob_sha": "79a15db49757094d8d5b0537c10f63ece9352bf5"
+  },
+  {
     "path": ".gitignore",
-    "bytes": 215,
-    "sha256": "22fb27e26f67884964b922cded141ef696d52944c97b8cd3948a3be7e31a778f",
-    "git_blob_sha": "3f587d028475f38d103717c5c4dfa5fc48f40514"
+    "bytes": 248,
+    "sha256": "0c122366fbcd8b00691037e902ba5e8fc5e4451d79e8f35c1c77544bd2d9f256",
+    "git_blob_sha": "c136e344be25e2161e4e8816324d90e5298a22cc"
   },
   {
     "path": "CODEX_LOCAL_ACCEPTANCE.md",
@@ -13,9 +19,9 @@
   },
   {
     "path": "HANDOFF_MANIFEST.json",
-    "bytes": 460292,
-    "sha256": "5b2361025c17b30cdc0212532309d2b31b3bcf26265163a02e550cc7bf3ead5b",
-    "git_blob_sha": "a1db6c5e6402de9418bcb5368dde7109d8480f11"
+    "bytes": 460481,
+    "sha256": "c9fa6993d05359fcb58918e90638907d8b9ca8e34caf1a8bc6e7f51d0714b2d5",
+    "git_blob_sha": "1146717ae4d73382de7cad62ffec50b707ca8554"
   },
   {
     "path": "LOCAL_CODEX_START.txt",
@@ -678,6 +684,12 @@
     "git_blob_sha": "693690aa68c690055c7c1ae5a26a3b692cab6ccd"
   },
   {
+    "path": "project/data/player_copy.json",
+    "bytes": 54572,
+    "sha256": "4c2459d9988b845957715953b4f975f4c74c860da984b1c46600e98602fd51d9",
+    "git_blob_sha": "028cdc4dd0c14110b6b623714094b800ddccf4ef"
+  },
+  {
     "path": "project/project.godot",
     "bytes": 448,
     "sha256": "4f365940ca8a6800fb66ade354a0fbc84fdad8c6c0e1922548416a8e9f052d9b",
@@ -769,9 +781,9 @@
   },
   {
     "path": "project/scripts/game_controller.gd",
-    "bytes": 160413,
-    "sha256": "4d920660ea3f7b08944d614a87990a4db434b57a3728b468c5e9a45863faa746",
-    "git_blob_sha": "d9a251bc70286ae7d093ea7334cdc1f6074b7a83"
+    "bytes": 150408,
+    "sha256": "472631366b32bb540fc5cd983cc82b24bb2590c66292663bcc6037fcf448a833",
+    "git_blob_sha": "2f6f6f5a6b13b51dde05e39c87d17b380259a9fd"
   },
   {
     "path": "project/scripts/game_controller.gd.uid",
@@ -829,9 +841,9 @@
   },
   {
     "path": "project/scripts/layout_view.gd",
-    "bytes": 4976,
-    "sha256": "a2507e8ec0367eb22bfbd76cb292074d913829117c90a384c2eae566aad3f8fd",
-    "git_blob_sha": "cdeb58cbac7318b5b75343801480b555cd11dcb8"
+    "bytes": 5591,
+    "sha256": "86d0ec341efce275188533f81730c670ed21cfb905a73347d5094e7a6baec8b5",
+    "git_blob_sha": "71f61b2be51abf76950dc1289b9c1cdf5e633bd9"
   },
   {
     "path": "project/scripts/layout_view.gd.uid",
@@ -877,9 +889,9 @@
   },
   {
     "path": "project/scripts/native_save.gd",
-    "bytes": 28923,
-    "sha256": "d148730712c8010c1ea4afa6f09199784a11d0efdc28c2368d89195c53422276",
-    "git_blob_sha": "990eed9f856722ebe04e0ae0eb98995ca2e49c43"
+    "bytes": 29016,
+    "sha256": "c057f15e19a1cfd9490e187cd5a8685491bea59331d71f8d14b82fe449d07618",
+    "git_blob_sha": "55aeab066b94a12395e33bb44fa1a3a222567126"
   },
   {
     "path": "project/scripts/native_save.gd.uid",

@@ -1,7 +1,8 @@
 # Original bytes restored from tracked payload parts.
 /project/assets/
 /project/fonts/
-/project/data/
+/project/data/*
+!/project/data/player_copy.json
 /art_reference/
 /project/.godot/
 **/*.import
